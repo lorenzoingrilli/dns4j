@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
  */
-public class RecursiveAsyncClient implements AsyncResolver {
+public class UDPAsyncClient implements AsyncResolver {
 
     private InetAddress address;
     private int port;
@@ -35,7 +35,7 @@ public class RecursiveAsyncClient implements AsyncResolver {
     private ConcurrentHashMap<Integer, DelayedRequest> requests = new ConcurrentHashMap<Integer, DelayedRequest>();
     private DelayQueue<DelayedRequest> queue = new DelayQueue<DelayedRequest>();
 
-    public RecursiveAsyncClient(InetAddress address, int port) throws UnknownHostException, SocketException {
+    public UDPAsyncClient(InetAddress address, int port) throws UnknownHostException, SocketException {
         this.address = address;
         this.port = port;
         socket = new DatagramSocket();
