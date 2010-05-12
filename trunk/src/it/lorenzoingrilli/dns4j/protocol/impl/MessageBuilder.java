@@ -2,13 +2,21 @@ package it.lorenzoingrilli.dns4j.protocol.impl;
 
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Question;
+import java.util.Random;
 
 /**
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
  */
 public class MessageBuilder {
 	
-	private Message message = new MessageImpl();
+	private Message message = null;
+        private Random random = null;
+
+        public MessageBuilder() {
+            message = new MessageImpl();
+            random = new Random(System.currentTimeMillis());
+            setId(random.nextInt(65535));
+        }
 	
 	public MessageBuilder setRecursionDesidered(boolean flag) {
 		message.getHeader().setRecursionDesidered(flag);

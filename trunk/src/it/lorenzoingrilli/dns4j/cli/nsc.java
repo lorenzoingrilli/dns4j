@@ -5,10 +5,9 @@ import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.impl.MessageBuilder;
 import it.lorenzoingrilli.dns4j.protocol.impl.QuestionImpl;
-import it.lorenzoingrilli.dns4j.resolver.impl.UDPSyncClient;
+import it.lorenzoingrilli.dns4j.resolver.impl.DNSClient;
 
 import java.net.InetAddress;
-import java.util.Random;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -19,6 +18,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
+ * DNS command line client
+ * 
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
  */
 public class nsc {
@@ -46,6 +47,7 @@ public class nsc {
     }
     
     public static void main(String[] args) throws Exception {
+
     	CommandLine cmdline = parseCmdLine(options, args);
     	
     	InetAddress server = InetAddress.getByName(cmdline.getOptionValue('s', DEFAULT_SERVER));
@@ -53,25 +55,23 @@ public class nsc {
     	String name = cmdline.getOptionValue('n');    	
     	boolean recusion = !cmdline.hasOption('N') || cmdline.hasOption('r');
     	boolean follow = cmdline.hasOption('f');
-    	long timeout = Long.parseLong(cmdline.getOptionValue('T', DEFAULT_TIMEOUT));
-    	int attempts = Integer.parseInt(cmdline.getOptionValue('a', DEFAULT_ATTEMPTS));
+    	int timeout = Integer.parseInt(cmdline.getOptionValue('T', DEFAULT_TIMEOUT));
+    	int numAttempts = Integer.parseInt(cmdline.getOptionValue('a', DEFAULT_ATTEMPTS));
     	int type = Integer.parseInt(cmdline.getOptionValue('t', Type.A+""));
     	int clazz = Integer.parseInt(cmdline.getOptionValue('c', Clazz.IN+""));    	
     	    	
-       	UDPSyncClient client = new UDPSyncClient(server, port);
-    	client.open();
+       	DNSClient client = new DNSClient(server, port);
+       	client.setTimeout(timeout);
+       	client.setNumAttempts(numAttempts);
 
     	Message req = 
     		new MessageBuilder()
-    		.setId(new Random().nextInt())
     		.setRecursionDesidered(recusion)
     		.addQuestion(new QuestionImpl(name, type, clazz))
     		.message();
     	
         Message resp = client.query(req);
-        
-    	client.close();
-    	
+            	
     	System.out.println("REQUEST "+req);
     	System.out.println("RESPONSE "+resp);
     	
@@ -79,16 +79,16 @@ public class nsc {
     
     private static CommandLine parseCmdLine(Options options, String args[])
     {   	    	 
-   	 try {
-   		CommandLineParser parser = new GnuParser();
-   		return parser.parse( options, args );
-   	 }
-   	 catch(ParseException exp ) {
-   		HelpFormatter help = new HelpFormatter();
-        help.printHelp("nsc", "Name Server Client", options, "Developed by Lorenzo Ingrilli' - http://www.lorenzoingrilli.it", true);
-        System.exit(1);
-   	 }
-   	 return null;
+        try {
+            CommandLineParser parser = new GnuParser();
+            return parser.parse( options, args );
+        }
+        catch(ParseException exp ) {
+            HelpFormatter help = new HelpFormatter();
+            help.printHelp("nsc", "Name Server Client", options, "Developed by Lorenzo Ingrilli' - http://www.lorenzoingrilli.it", true);
+            System.exit(1);
+        }
+        return null;
     }
     
 }

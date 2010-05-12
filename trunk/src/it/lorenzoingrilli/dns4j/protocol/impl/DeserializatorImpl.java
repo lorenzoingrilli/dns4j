@@ -24,7 +24,7 @@ public class DeserializatorImpl {
     private static final Charset charset = Charset.forName("ASCII");
     private static final char DOT = '.';
     
-    public static Message deserialize(byte[] buffer) throws UnknownHostException {
+    public static Message deserialize(byte[] buffer) {
         MessageImpl m = new MessageImpl();
         ByteBuffer bb = ByteBuffer.wrap(buffer);
         
@@ -76,7 +76,7 @@ public class DeserializatorImpl {
         return m;
     }
 
-    private static RR deserializeRR(ByteBuffer bb) throws UnknownHostException {
+    private static RR deserializeRR(ByteBuffer bb){
         String name = getDomainName(bb);
         int type = getUShort(bb);
         int clazz = getUShort(bb);
@@ -112,15 +112,20 @@ public class DeserializatorImpl {
         return rr;
     }
 
-    private static RR deserializeA(ByteBuffer bb) throws UnknownHostException {
-        byte addr[] = new byte[4];
-        bb.get(addr);
-        A a = new AImpl();
-        a.setAddress((Inet4Address) Inet4Address.getByAddress(addr));
-        return a;
+    private static RR deserializeA(ByteBuffer bb) {
+    	try {
+	        byte addr[] = new byte[4];
+	        bb.get(addr);
+	        A a = new AImpl();
+	        a.setAddress((Inet4Address) Inet4Address.getByAddress(addr));        
+	        return a;
+    	}
+    	catch(UnknownHostException e) {
+    		throw new RuntimeException(e);
+    	}    	
     }
 
-    private static RR deserializeCName(ByteBuffer bb) throws UnknownHostException {
+    private static RR deserializeCName(ByteBuffer bb){
         String name = getDomainName(bb);
         CName cname = new CNameImpl();
         cname.setCname(name);
