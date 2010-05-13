@@ -1,0 +1,49 @@
+<project name="dns4j" default="build">
+
+<description>
+	DNS Implementation
+</description>
+
+<property name="vmversion" value="1.6"/>
+
+<property name="extdirs" location="lib"/>
+<property name="srcdir" location="src"/>
+<property name="testdir" location="test"/>
+<property name="extdir" location="lib"/>
+<property name="workdir" location="work"/>	
+<property name="buildsrcdir" location="${workdir}/build-src"/>
+<property name="buildsrcgdir" location="${workdir}/build-src-g"/>
+<property name="buildtestdir" location="${workdir}/build-test"/>
+<property name="distdir" location="${workdir}/dist"/>
+<property name="docsdir" location="${workdir}/javadocs"/>
+	
+<target name="build">	
+	<mkdir dir="${distdir}"/>
+	
+	<mkdir dir="${buildsrcdir}"/>
+	<javac debug="true" srcdir="${srcdir}" destdir="${buildsrcdir}" extdirs="${extdir}" target="${vmversion}"/>
+	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j.jar"/>
+	
+	<mkdir dir="${buildsrcgdir}"/>
+	<javac debug="false" srcdir="${srcdir}" destdir="${buildsrcgdir}" extdirs="${extdir}" target="${vmversion}"/>
+	<copy todir="${buildsrcgdir}">
+		<fileset dir="${srcdir}"/>
+	</copy>
+	<jar basedir="${buildsrcgdir}" destfile="${distdir}/dns4j-g.jar"/>	
+</target>
+	
+<target name="rebuild" depends="clean,build"/>
+		
+<target name="docs">
+	<mkdir dir="${docsdir}"/>
+	<javadoc destdir="${docsdir}" author="true" version="true" use="true" windowtitle="dns4j" extdirs="${extdir}">
+		<packageset dir="${srcdir}"/>
+		<bottom><![CDATA[<i>Copyright &#169; Lorenzo Ingrill&igrave;</i>]]></bottom>
+	</javadoc>
+</target>
+	
+<target name="clean">
+	<delete dir="${workdir}"/>
+</target>
+	
+</project>
