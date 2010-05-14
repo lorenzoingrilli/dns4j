@@ -1,17 +1,15 @@
 package it.lorenzoingrilli.dns4j.resolver.impl;
 
+import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.impl.DeserializatorImpl;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializatorImpl;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
@@ -51,10 +49,10 @@ public class DNSClient implements SyncResolver {
         boolean success = false;
     	while(!success)
         try {
-            send(socket, buffer, len);
+            UDP.send(socket, host, port, buffer, len);
             //TODO check: src host/port should be equals to request host/port
             while(!success) {
-                DatagramPacket udpResp = receive(socket, buffer);
+                DatagramPacket udpResp = UDP.receive(socket, buffer);
                 resp = DeserializatorImpl.deserialize(buffer);
                 if(resp.getHeader().getId()==request.getHeader().getId())
                     success = true;
@@ -81,43 +79,6 @@ public class DNSClient implements SyncResolver {
             // TODO: TCP call
         }
         return resp;
-    }
-
-    private void send(DatagramSocket socket, byte[] request, int requestLen) throws IOException {
-        DatagramPacket packet = new DatagramPacket(request, requestLen, host, port);
-        socket.send(packet);
-    }
-
-    private DatagramPacket receive(DatagramSocket socket, byte[] response) throws IOException {
-        DatagramPacket packet = new DatagramPacket(response, response.length);
-        socket.receive(packet);
-        return packet;
-    }
-
-    private int receive(InputStream is, byte[] response) throws IOException {
-	 int letti = 0;
-         int r = 0;
-	 while(r>=0) {
-            r = is.read(response, letti, response.length-letti);
-            letti += r;
-	 }
-         return letti;
-    }
-
-    private void send(OutputStream os, byte[] request, int len) throws IOException {
-        os.write(request, 0, len);
-    }
-    
-    public int tcpQuery(byte[] request, int requestLen, byte[] response) throws IOException {
-    	Socket socket = new Socket(host, port);
-    	OutputStream os = socket.getOutputStream(); 
-    	InputStream is = socket.getInputStream();
-        send(os, request, requestLen);
-        int letti = receive(is, response);
-        is.close();
-        os.close();
-    	socket.close();
-        return letti;
     }
 
     public int getTimeout() {
