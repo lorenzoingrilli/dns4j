@@ -6,10 +6,22 @@ import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.A;
 import it.lorenzoingrilli.dns4j.protocol.rr.CName;
+import it.lorenzoingrilli.dns4j.protocol.rr.HInfo;
+import it.lorenzoingrilli.dns4j.protocol.rr.Mx;
+import it.lorenzoingrilli.dns4j.protocol.rr.Ns;
+import it.lorenzoingrilli.dns4j.protocol.rr.Ptr;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
+import it.lorenzoingrilli.dns4j.protocol.rr.Soa;
+import it.lorenzoingrilli.dns4j.protocol.rr.Txt;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.AImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.CNameImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.HInfoImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.MxImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.NsImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.PtrImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.RRImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.SoaImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.TxtImpl;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -86,12 +98,12 @@ public class DeserializatorImpl {
         switch(type) {
             case Type.A: rr = deserializeA(bb); break;
             case Type.CNAME: rr = deserializeCName(bb); break;
-            /*case Type.HINFO: deserializeA(bb); break;
-            case Type.MX: deserializeA(bb); break;
-            case Type.NS: deserializeA(bb); break;
-            case Type.PTR: deserializeA(bb); break;
-            case Type.SOA: deserializeA(bb); break;
-            case Type.TXT: deserializeA(bb); break;*/
+            case Type.MX: rr = deserializeMx(bb); break;
+            case Type.NS: rr = deserializeNs(bb); break;
+            case Type.SOA: rr = deserializeSoa(bb); break;
+            case Type.PTR: rr = deserializePtr(bb); break;
+            case Type.HINFO: rr = deserializeHInfo(bb); break;
+            case Type.TXT: rr = deserializeTxt(bb); break;
             default:
                 byte[] rdata = new byte[len];
                 bb.get(rdata);
@@ -130,6 +142,54 @@ public class DeserializatorImpl {
         CName cname = new CNameImpl();
         cname.setCname(name);
         return cname;
+    }
+    
+    private static RR deserializeMx(ByteBuffer bb){
+    	int preference = getUShort(bb);
+        String exchange = getDomainName(bb);
+        Mx mx = new MxImpl();        
+        mx.setPreference(preference);
+        mx.setExchange(exchange);
+        return mx;
+    }
+    
+    private static RR deserializeNs(ByteBuffer bb){
+        String name = getDomainName(bb);
+        Ns ns = new NsImpl();
+        ns.setNsdName(name);
+        return ns;
+    }
+    
+    private static RR deserializePtr(ByteBuffer bb){
+        String name = getDomainName(bb);
+        Ptr ptr = new PtrImpl();
+        ptr.setPtrDname(name);
+        return ptr;
+    }
+
+    private static RR deserializeSoa(ByteBuffer bb){
+        Soa soa = new SoaImpl();
+        soa.setMName(getDomainName(bb));
+        soa.setRName(getDomainName(bb));
+        soa.setSerial(getUInt(bb));
+        soa.setRefresh(getUInt(bb));
+        soa.setRetry(getUInt(bb));
+        soa.setExpire(getUInt(bb));
+        soa.setMinimum(getUInt(bb));
+        return soa;
+    }
+    
+    private static RR deserializeHInfo(ByteBuffer bb){    	
+        HInfo hinfo = new HInfoImpl();
+        hinfo.setCpu(getCharacterString(bb));
+        hinfo.setHost(getCharacterString(bb));
+        return hinfo;
+    }
+    
+    private static RR deserializeTxt(ByteBuffer bb){    	
+        Txt txt = new TxtImpl();
+        txt.setData(getCharacterString(bb));
+        return txt;
     }
 
     private static String getCharacterString(ByteBuffer bb) {

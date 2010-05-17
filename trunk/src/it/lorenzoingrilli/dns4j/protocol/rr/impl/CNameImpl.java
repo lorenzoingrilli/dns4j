@@ -16,7 +16,7 @@ public class CNameImpl extends RRSpecificImpl implements CName {
 
     @Override
     public String toString() {
-        return "CName(name="+getName()+", cname="+cname+")";
+        return "CNAME(name="+getName()+", ttl="+getTtl()+", cname="+cname+")";
     }
 
     @Override

@@ -5,5 +5,7 @@ package it.lorenzoingrilli.dns4j.protocol.rr;
  */
 public interface Mx extends RR {
     public int getPreference();
+    public void setPreference(int preference);
     public String getExchange();
+    public void setExchange(String exchange);
 }

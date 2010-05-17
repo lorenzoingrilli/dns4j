@@ -5,10 +5,17 @@ package it.lorenzoingrilli.dns4j.protocol.rr;
  */
 public interface Soa extends RR {
     public String getMName();
+    public void setMName(String mname);
     public String getRName();
-    public int getSerial();
-    public int getRefresh();
-    public int getRetry();
-    public int getExpire();
-    public int getMinimum();
+    public void setRName(String rname);
+    public long getSerial();
+    public void setSerial(long serial);
+    public long getRefresh();
+    public void setRefresh(long refresh);
+    public long getRetry();
+    public void setRetry(long retry);
+    public long getExpire();
+    public void setExpire(long expire);
+    public long getMinimum();
+    public void setMinimum(long minimum);
 }

@@ -15,6 +15,11 @@ public class RRImpl implements RR {
     private byte[] rdata;
 
     @Override
+    public String toString() {
+    	return "RR(name="+name+", type="+type+", class="+clazz+", ttl="+ttl+")";     	
+    }
+    
+    @Override
     public long getTtl() {
         return ttl;
     }

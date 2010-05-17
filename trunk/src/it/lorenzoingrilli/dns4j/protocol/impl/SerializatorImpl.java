@@ -94,7 +94,7 @@ public class SerializatorImpl {
         putUShort(bb, domainNameSize(cname.getCname()));
         putDomainName(bb, cname.getCname());
     }
-
+    
     private static void serialize(ByteBuffer bb, HInfo hinfo) {
         putUShort(bb,
                 domainNameSize(hinfo.getCpu())+
@@ -111,8 +111,8 @@ public class SerializatorImpl {
     }
 
     private static void serialize(ByteBuffer bb, Ns ns) {
-        putUShort(bb, domainNameSize(ns.getNSDname()));
-        putDomainName(bb, ns.getNSDname());
+        putUShort(bb, domainNameSize(ns.getNsdName()));
+        putDomainName(bb, ns.getNsdName());
     }
 
     private static void serialize(ByteBuffer bb, Ptr ptr) {
@@ -137,9 +137,9 @@ public class SerializatorImpl {
 
     private static void serialize(ByteBuffer bb, Txt txt) {
         putUShort(bb, 
-                characterStringSize(txt.getTxtData())
+                characterStringSize(txt.getData())
         );
-        putCharacterString(bb, txt.getTxtData());
+        putCharacterString(bb, txt.getData());
     }
     
     private static int domainNameSize(String s) {

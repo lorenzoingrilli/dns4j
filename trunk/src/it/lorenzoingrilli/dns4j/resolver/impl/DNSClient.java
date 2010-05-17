@@ -32,8 +32,9 @@ public class DNSClient implements SyncResolver {
         this.port = port;
     }
 
+    /*
     @Override
-    public Message query(Message request) {
+    public synchronized Message query(Message request) {
         DatagramSocket socket = null;
         try {
             socket = new DatagramSocket();
@@ -78,6 +79,44 @@ public class DNSClient implements SyncResolver {
         if(resp.getHeader().isTruncated()) {
             // TODO: TCP call
         }
+        return resp;
+    }*/
+    
+    @Override
+    public synchronized Message query(Message request) {
+		try {
+			Message resp = query(host, port, request, numAttempts, timeout);
+			if(resp.getHeader().isTruncated()) {
+	            // TODO: TCP call
+	        }
+			return resp;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+    }
+    
+    private Message query(InetAddress host, int port, Message request, int numTries, int timeout) throws IOException {
+        byte[] buffer = new byte[512];
+        int len = SerializatorImpl.serialize(request, buffer);
+    	Message resp = null;
+    	int triesCount = 0;
+    	boolean success = false;    	
+        DatagramSocket socket = UDP.open(timeout);
+        while(!success && triesCount<numTries) 
+	        try {
+	        	triesCount++;
+	        	UDP.send(socket, host, port, buffer, len);
+	            DatagramPacket udpResp = UDP.receive(socket, buffer);
+	            //TODO check: src host/port should be equals to request host/port
+	            resp = DeserializatorImpl.deserialize(buffer);            
+	            if(resp.getHeader().getId()==request.getHeader().getId())
+	                success = true;
+	            else
+	                resp = null;
+	        }
+	        catch(SocketTimeoutException e) {
+	        }
+        UDP.close(socket);
         return resp;
     }
 

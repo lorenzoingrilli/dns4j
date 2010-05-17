@@ -18,7 +18,7 @@ public class AImpl extends RRSpecificImpl implements A {
 
     @Override
     public String toString() {
-        return "A(name="+getName()+", address="+address.getHostAddress()+")";
+        return "A(name="+getName()+", ttl="+getTtl()+", address="+address.getHostAddress()+")";
     }
 
     public Inet4Address getAddress() {

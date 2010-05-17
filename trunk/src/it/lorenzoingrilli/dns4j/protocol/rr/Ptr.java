@@ -5,4 +5,5 @@ package it.lorenzoingrilli.dns4j.protocol.rr;
  */
 public interface Ptr extends RR {
     public String getPtrDname();
+    public void setPtrDname(String ptrDname);
 }
