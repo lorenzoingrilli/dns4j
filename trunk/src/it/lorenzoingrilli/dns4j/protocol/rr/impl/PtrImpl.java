@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Ptr;
 
@@ -11,7 +12,7 @@ public class PtrImpl extends RRSpecificImpl implements Ptr {
     private String ptrDname;
 
     public PtrImpl() {
-        super(Type.PTR);
+        super(Clazz.IN, Type.PTR);
     }
 
     @Override

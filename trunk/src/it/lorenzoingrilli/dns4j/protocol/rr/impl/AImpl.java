@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.A;
 
@@ -13,7 +14,7 @@ public class AImpl extends RRSpecificImpl implements A {
     private Inet4Address address;
 
     public AImpl() {
-        super(Type.A);
+        super(Clazz.IN, Type.A);
     }
 
     @Override

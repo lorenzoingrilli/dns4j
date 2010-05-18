@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Soa;
 
@@ -17,7 +18,7 @@ public class SoaImpl extends RRSpecificImpl implements Soa {
     private long minimum;
 
 	public SoaImpl() {
-        super(Type.SOA);
+        super(Clazz.IN, Type.SOA);
     }
 
     @Override

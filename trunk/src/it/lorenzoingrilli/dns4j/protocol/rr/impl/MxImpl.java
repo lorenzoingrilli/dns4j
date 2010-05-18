@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Mx;
 
@@ -9,7 +10,7 @@ public class MxImpl extends RRSpecificImpl implements Mx {
 	private int preference;
 	
     public MxImpl() {
-        super(Type.MX);
+        super(Clazz.IN, Type.MX);
     }
     
     @Override

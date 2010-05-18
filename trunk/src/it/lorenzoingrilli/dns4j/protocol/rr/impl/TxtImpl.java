@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Txt;
 
@@ -11,7 +12,7 @@ public class TxtImpl extends RRSpecificImpl implements Txt {
     private String data;
 
 	public TxtImpl() {
-        super(Type.TXT);
+        super(Clazz.IN, Type.TXT);
     }
 
     @Override

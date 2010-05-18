@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.HInfo;
 
@@ -12,7 +13,7 @@ public class HInfoImpl extends RRSpecificImpl implements HInfo {
     private String cpu;
 
 	public HInfoImpl() {
-        super(Type.HINFO);
+        super(Clazz.IN, Type.HINFO);
     }
 
     @Override

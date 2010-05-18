@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.CName;
 
@@ -11,7 +12,7 @@ public class CNameImpl extends RRSpecificImpl implements CName {
     private String cname;
 
     public CNameImpl() {
-        super(Type.CNAME);
+        super(Clazz.IN, Type.CNAME);
     }
 
     @Override

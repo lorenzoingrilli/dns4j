@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Ns;
 
@@ -8,7 +9,7 @@ public class NsImpl extends RRSpecificImpl implements Ns {
 	private String nsdName;
 	
     public NsImpl() {
-        super(Type.NS);
+        super(Clazz.IN, Type.NS);
     }
     
     @Override

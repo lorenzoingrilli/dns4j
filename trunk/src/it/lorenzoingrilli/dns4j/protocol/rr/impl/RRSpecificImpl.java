@@ -5,9 +5,10 @@ package it.lorenzoingrilli.dns4j.protocol.rr.impl;
  */
 public class RRSpecificImpl extends RRImpl {
 
-    public RRSpecificImpl(int type) {
+    public RRSpecificImpl(int clazz, int type) {
         super();
         super.setType(type);
+        super.setClazz(clazz);
     }
 
     @Override
