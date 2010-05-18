@@ -72,7 +72,7 @@ public class nsc {
     	
         Message resp = client.query(req);
             	
-    	System.out.println("REQUEST "+req);
+    	System.out.println("REQUEST  "+req);
     	System.out.println("RESPONSE "+resp);
     	
     }
