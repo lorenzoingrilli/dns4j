@@ -122,12 +122,12 @@ public class SerializatorImpl {
 
     private static void serialize(ByteBuffer bb, Soa soa) {
         putUShort(bb, 
-                domainNameSize(soa.getMName())+
-                domainNameSize(soa.getRName())+
+                domainNameSize(soa.getMname())+
+                domainNameSize(soa.getRname())+
                 20
         );
-        putDomainName(bb, soa.getMName());
-        putDomainName(bb, soa.getRName());
+        putDomainName(bb, soa.getMname());
+        putDomainName(bb, soa.getRname());
         putUInt(bb, soa.getSerial());
         putUInt(bb, soa.getRefresh());
         putUInt(bb, soa.getRetry());

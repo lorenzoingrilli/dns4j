@@ -27,22 +27,22 @@ public class SoaImpl extends RRSpecificImpl implements Soa {
     }
     
     @Override
-    public String getMName() {
+    public String getMname() {
 		return mname;
 	}
 
     @Override
-	public void setMName(String mname) {
+	public void setMname(String mname) {
 		this.mname = mname;
 	}
 
     @Override
-	public String getRName() {
+	public String getRname() {
 		return rname;
 	}
 
     @Override
-	public void setRName(String rname) {
+	public void setRname(String rname) {
 		this.rname = rname;
 	}
 

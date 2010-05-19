@@ -169,8 +169,8 @@ public class DeserializatorImpl {
 
     private static RR deserializeSoa(ByteBuffer bb){
         Soa soa = new SoaImpl();
-        soa.setMName(getDomainName(bb));
-        soa.setRName(getDomainName(bb));
+        soa.setMname(getDomainName(bb));
+        soa.setRname(getDomainName(bb));
         soa.setSerial(getUInt(bb));
         soa.setRefresh(getUInt(bb));
         soa.setRetry(getUInt(bb));

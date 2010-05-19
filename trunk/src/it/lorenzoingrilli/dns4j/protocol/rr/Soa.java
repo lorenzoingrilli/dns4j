@@ -4,10 +4,10 @@ package it.lorenzoingrilli.dns4j.protocol.rr;
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
  */
 public interface Soa extends RR {
-    public String getMName();
-    public void setMName(String mname);
-    public String getRName();
-    public void setRName(String rname);
+    public String getMname();
+    public void setMname(String mname);
+    public String getRname();
+    public void setRname(String rname);
     public long getSerial();
     public void setSerial(long serial);
     public long getRefresh();
