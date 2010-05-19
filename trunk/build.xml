@@ -1,4 +1,8 @@
-<project name="dns4j" default="build">
+<project
+	name="dns4j" 
+	default="build"
+	xmlns:ivy="antlib:org.apache.ivy.ant"
+	>
 
 <description>
 	DNS Implementation
@@ -6,10 +10,9 @@
 
 <property name="vmversion" value="1.6"/>
 
-<property name="extdirs" location="lib"/>
 <property name="srcdir" location="src"/>
 <property name="testdir" location="test"/>
-<property name="extdir" location="lib"/>
+<property name="libdir" location="lib"/>
 <property name="workdir" location="work"/>	
 <property name="buildsrcdir" location="${workdir}/build-src"/>
 <property name="buildsrcgdir" location="${workdir}/build-src-g"/>
@@ -21,11 +24,11 @@
 	<mkdir dir="${distdir}"/>
 	
 	<mkdir dir="${buildsrcdir}"/>
-	<javac debug="true" srcdir="${srcdir}" destdir="${buildsrcdir}" extdirs="${extdir}" target="${vmversion}"/>
+	<javac debug="true" srcdir="${srcdir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
 	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j.jar"/>
 	
 	<mkdir dir="${buildsrcgdir}"/>
-	<javac debug="false" srcdir="${srcdir}" destdir="${buildsrcgdir}" extdirs="${extdir}" target="${vmversion}"/>
+	<javac debug="false" srcdir="${srcdir}" destdir="${buildsrcgdir}" extdirs="${libdir}" target="${vmversion}"/>
 	<copy todir="${buildsrcgdir}">
 		<fileset dir="${srcdir}"/>
 	</copy>
@@ -36,7 +39,7 @@
 		
 <target name="docs">
 	<mkdir dir="${docsdir}"/>
-	<javadoc destdir="${docsdir}" author="true" version="true" use="true" windowtitle="dns4j" extdirs="${extdir}">
+	<javadoc destdir="${docsdir}" author="true" version="true" use="true" windowtitle="dns4j" extdirs="${libdir}">
 		<packageset dir="${srcdir}"/>
 		<bottom><![CDATA[<i>Copyright &#169; Lorenzo Ingrill&igrave;</i>]]></bottom>
 	</javadoc>
@@ -45,5 +48,19 @@
 <target name="clean">
 	<delete dir="${workdir}"/>
 </target>
+	
+ <target name="dep" depends="clean" description="retrieve dependencies" >
+ 	<mkdir dir="${libdir}"/>
+ 	<mkdir dir="${workdir}"/>
+ 	
+ 	<get src="http://yamlbeans.googlecode.com/files/yamlbeans-1.04.jar" dest="${libdir}"/>
+	
+ 	<get src="http://apache.fastbull.org/commons/cli/binaries/commons-cli-1.2-bin.tar.gz" dest="${workdir}"/>
+ 	<gunzip src="${workdir}/commons-cli-1.2-bin.tar.gz" dest="${workdir}/commons-cli-1.2-bin.tar"/>
+ 	<untar src="${workdir}/commons-cli-1.2-bin.tar" dest="${workdir}"/>
+ 	<copy todir="${libdir}">
+		<fileset file="${workdir}/commons-cli-1.2/commons-cli-1.2.jar"/>
+ 	</copy>
+ </target>
 	
 </project>
