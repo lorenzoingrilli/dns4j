@@ -22,10 +22,12 @@ public class AImpl extends RRSpecificImpl implements A {
         return "A(name="+getName()+", ttl="+getTtl()+", address="+address.getHostAddress()+")";
     }
 
+    @Override
     public Inet4Address getAddress() {
         return this.address;
     }
 
+    @Override
     public void setAddress(Inet4Address address) {
         this.address = address;
     }

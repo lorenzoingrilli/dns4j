@@ -21,5 +21,6 @@ public class Type {
     public static final int MINFO = 14;
     public static final int MX = 15;
     public static final int TXT = 16;
+    public static final int AAAA = 28;
     
 }
