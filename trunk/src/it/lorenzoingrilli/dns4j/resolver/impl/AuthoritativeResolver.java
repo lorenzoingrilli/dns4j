@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.resolver.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Header;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.RetCodes;
@@ -20,6 +21,7 @@ abstract public class AuthoritativeResolver implements SyncResolver {
 		response.getHeader().setRecursionDesidered(request.getHeader().isRecursionDesidered());
 		response.getHeader().setRecursionAvailable(false);
 		response.getHeader().setAuthoritative(true);
+		response.getHeader().setQuery(Header.ANSWER);
 				
 		for(Question q: request.getQuestions()) {
 			QuestionResponse r = query(q);
@@ -36,6 +38,11 @@ abstract public class AuthoritativeResolver implements SyncResolver {
 			response.getHeader().setResponseCode(RetCodes.NOTFOUND);
 			// TODO if not found return SOA record
 		}
+		
+		response.getHeader().setQdCount(response.getQuestions().size());
+		response.getHeader().setAnCount(response.getAnswer().size());
+		response.getHeader().setNsCount(response.getAuthority().size());
+		response.getHeader().setArCount(response.getAdditional().size());
 		
 		return response;
 	}
