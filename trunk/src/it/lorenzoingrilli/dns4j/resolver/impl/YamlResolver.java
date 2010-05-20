@@ -21,6 +21,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -47,7 +49,7 @@ public class YamlResolver extends AuthoritativeResolver {
 	}
 	
 	private String file;
-	private HashMap<String, Zone> zones = new HashMap<String, Zone>();
+	private HashMap<ZoneEntryKey, List<RR>> map = new HashMap<ZoneEntryKey, List<RR>>();
 
 	public YamlResolver(String file) throws IOException {
 		this.file = file;
@@ -69,7 +71,10 @@ public class YamlResolver extends AuthoritativeResolver {
 		config.setClassTag("txt", TxtImpl.class);
 		Zone zone = null;
 		while( (zone = (Zone) reader.read()) != null) {
-				zones.put(zone.getName(), zone);
+				Set<Entry<ZoneEntryKey, List<RR>>> es = zone.getMap().entrySet();				
+				for(Entry<ZoneEntryKey, List<RR>> e: es) {
+					map.put(e.getKey(), e.getValue());
+				}
 		}	
 	}
 	
@@ -77,23 +82,17 @@ public class YamlResolver extends AuthoritativeResolver {
 	public QuestionResponse query(Question q) {
 		QuestionResponse qr = null;
 		String name = q.getQname();
-		int n = name.indexOf('.');
-		String hostname = name.substring(0, n);
-		String zonename = name.substring(n+1);
-		Zone zone = zones.get(zonename);
-		if(zone!=null) {
-			HashMap<ZoneEntryKey, List<RR>> map = zone.getMap();
-			if(map!=null) {
-				ZoneEntryKey k = new ZoneEntryKey(name, q.getQclass(), q.getQtype());
-				List<RR> r = map.get(k);
-				if(r!=null)
-				for(RR rr: r) {
-					if(qr==null)
-						qr = new QuestionResponse();
-					qr.getAnswer().add(rr);
-				}
+		//int n = name.indexOf('.');
+		//String hostname = name.substring(0, n);
+		//String zonename = name.substring(n+1);
+		ZoneEntryKey k = new ZoneEntryKey(name, q.getQclass(), q.getQtype());
+		List<RR> r = map.get(k);
+		if(r!=null)
+			for(RR rr: r) {
+				if(qr==null)
+					qr = new QuestionResponse();
+				qr.getAnswer().add(rr);
 			}
-		}		
 		return qr;
 	}
 
