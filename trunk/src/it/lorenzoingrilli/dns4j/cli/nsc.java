@@ -43,7 +43,6 @@ public class nsc {
     	options.addOption(new Option("c", "class", true, "query class (default INET)"));
     	options.addOption(new Option("a", "attempts", true, "Number of times to try UDP queries to server (default 3)"));
     	options.addOption(new Option("T", "timeout", true, "timeout (in milliseconds) for a query (default 5 second)"));
-    	options.addOption(new Option("f", "follow", false, "follow authority"));
     }
     
     public static void main(String[] args) throws Exception {
@@ -54,7 +53,6 @@ public class nsc {
     	int port = Integer.parseInt(cmdline.getOptionValue('p', DEFAULT_PORT));
     	String name = cmdline.getOptionValue('n');    	
     	boolean recusion = !cmdline.hasOption('N') || cmdline.hasOption('r');
-    	boolean follow = cmdline.hasOption('f');
     	int timeout = Integer.parseInt(cmdline.getOptionValue('T', DEFAULT_TIMEOUT));
     	int numAttempts = Integer.parseInt(cmdline.getOptionValue('a', DEFAULT_ATTEMPTS));
     	int type = Integer.parseInt(cmdline.getOptionValue('t', Type.A+""));

@@ -4,6 +4,7 @@ import it.lorenzoingrilli.dns4j.protocol.Header;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.rr.A;
+import it.lorenzoingrilli.dns4j.protocol.rr.AAAA;
 import it.lorenzoingrilli.dns4j.protocol.rr.CName;
 import it.lorenzoingrilli.dns4j.protocol.rr.HInfo;
 import it.lorenzoingrilli.dns4j.protocol.rr.Mx;
@@ -72,6 +73,7 @@ public class SerializatorImpl {
         putUShort(bb, rr.getClazz());
         putUInt(bb, rr.getTtl());        
         if(rr instanceof A) serialize(bb, (A) rr);
+        else if(rr instanceof AAAA) serialize(bb, (AAAA) rr);
         else if(rr instanceof CName) serialize(bb, (CName) rr);
         else if(rr instanceof HInfo) serialize(bb, (HInfo) rr);
         else if(rr instanceof Mx) serialize(bb, (Mx) rr);
@@ -87,6 +89,11 @@ public class SerializatorImpl {
 
     private static void serialize(ByteBuffer bb, A a) {
         putUShort(bb, 4);
+        bb.put(a.getAddress().getAddress());
+    }
+    
+    private static void serialize(ByteBuffer bb, AAAA a) {
+        putUShort(bb, 16);
         bb.put(a.getAddress().getAddress());
     }
 
