@@ -1,6 +1,5 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
-import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 
 /**
@@ -8,10 +7,12 @@ import it.lorenzoingrilli.dns4j.protocol.rr.RR;
  */
 public class RRImpl implements RR {
 
+	public static final int NONE = -1;
+	
     private String name;
-    private int type;
-    private int clazz = Clazz.IN;
-    private long ttl;
+    private int type = NONE;
+    private int clazz = NONE;
+    private long ttl = NONE;
     private byte[] rdata;
 
     @Override
