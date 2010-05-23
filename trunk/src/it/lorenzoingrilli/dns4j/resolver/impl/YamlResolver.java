@@ -1,6 +1,5 @@
 package it.lorenzoingrilli.dns4j.resolver.impl;
 
-import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.AAAAImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.AImpl;
@@ -9,6 +8,7 @@ import it.lorenzoingrilli.dns4j.protocol.rr.impl.HInfoImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.MxImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.NsImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.PtrImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.RRImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.SoaImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.TxtImpl;
 
@@ -32,6 +32,13 @@ import com.esotericsoftware.yamlbeans.scalar.ScalarSerializer;
  */
 public class YamlResolver extends AuthoritativeResolver {
 		
+	public static final int DEFAULT_TTL = 86400;
+    public static final int DEFAULT_SOA_SERIAL = 1;
+    public static final int DEFAULT_SOA_REFRESH = 3600;
+    public static final int DEFAULT_SOA_RETRY = 600;
+    public static final int DEFAULT_SOA_EXPIRE = 86400;
+    public static final int DEFAULT_SOA_MINIMUM = 3600;
+
 	private String file;
 	private HashMap<ZoneEntryKey, List<RR>> map = new HashMap<ZoneEntryKey, List<RR>>();
 
@@ -61,18 +68,18 @@ public class YamlResolver extends AuthoritativeResolver {
 				Set<Entry<ZoneEntryKey, List<RR>>> es = zone.getMap().entrySet();				
 				for(Entry<ZoneEntryKey, List<RR>> e: es) {
 					map.put(e.getKey(), e.getValue());
+					for(RR rr: e.getValue()) {
+						if(rr.getTtl()==RRImpl.NONE)
+							rr.setTtl(DEFAULT_TTL);
+					}
 				}
 		}	
 	}
 	
 	@Override
-	public QuestionResponse query(Question q) {
+	public QuestionResponse query(String qname, int qclass, int qtype) {
 		QuestionResponse qr = null;
-		String name = q.getQname();
-		//int n = name.indexOf('.');
-		//String hostname = name.substring(0, n);
-		//String zonename = name.substring(n+1);
-		ZoneEntryKey k = new ZoneEntryKey(name.toLowerCase(), q.getQclass(), q.getQtype());
+		ZoneEntryKey k = new ZoneEntryKey(qname.toLowerCase(), qclass, qtype);
 		List<RR> r = map.get(k);
 		if(r!=null)
 			for(RR rr: r) {

@@ -4,6 +4,7 @@ import it.lorenzoingrilli.dns4j.protocol.Header;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.RetCodes;
+import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.impl.MessageImpl;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
@@ -35,8 +36,20 @@ abstract public class AuthoritativeResolver implements SyncResolver {
 			response.getQuestions().addAll(request.getQuestions());
 		
 		if(response.getAnswer().size()==0) {
-			response.getHeader().setResponseCode(RetCodes.NOTFOUND);
-			// TODO if not found return SOA record
+			response.getHeader().setResponseCode(RetCodes.NOTFOUND);			
+			for(Question q: request.getQuestions()) {
+				int n = q.getQname().indexOf('.');
+				String zonename = q.getQname().substring(n+1);
+				QuestionResponse r = query(zonename, q.getQclass(), Type.SOA);
+				if(r!=null) {
+					response.getAnswer().addAll(r.getAnswer());
+					response.getAuthority().addAll(r.getAuthority());
+					response.getAdditional().addAll(r.getAdditional());
+				}
+				else {
+					System.out.println("soa not found");
+				}
+			}
 		}
 		
 		response.getHeader().setQdCount(response.getQuestions().size());
@@ -47,7 +60,11 @@ abstract public class AuthoritativeResolver implements SyncResolver {
 		return response;
 	}
 	
-	abstract public QuestionResponse query(Question q); 
+	public QuestionResponse query(Question q) {
+		return query(q.getQname(), q.getQclass(), q.getQtype());
+	}
+	
+	abstract public QuestionResponse query(String qname, int qclass, int qtype);
 	
 	public boolean isQuestionEcho() {
 		return questionEcho;
