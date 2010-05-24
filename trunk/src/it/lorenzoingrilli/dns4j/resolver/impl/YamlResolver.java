@@ -12,6 +12,7 @@ import it.lorenzoingrilli.dns4j.protocol.rr.impl.RRImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.SoaImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.TxtImpl;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -32,6 +33,8 @@ import com.esotericsoftware.yamlbeans.scalar.ScalarSerializer;
  */
 public class YamlResolver extends AuthoritativeResolver {
 		
+	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"db.yml";
+	
 	public static final int DEFAULT_TTL = 86400;
     public static final int DEFAULT_SOA_SERIAL = 1;
     public static final int DEFAULT_SOA_REFRESH = 3600;
@@ -42,6 +45,10 @@ public class YamlResolver extends AuthoritativeResolver {
 	private String file;
 	private HashMap<ZoneEntryKey, List<RR>> map = new HashMap<ZoneEntryKey, List<RR>>();
 
+	public YamlResolver() throws IOException {
+		this(DEFAULT_CONF);
+	}
+	
 	public YamlResolver(String file) throws IOException {
 		this.file = file;
 		parse();
