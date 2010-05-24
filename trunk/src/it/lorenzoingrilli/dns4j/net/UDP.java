@@ -13,10 +13,21 @@ public class UDP {
 
 	public static final int DEFAULT_SEND_BUFFER_SIZE = 512;
 	public static final int DEFAULT_RECV_BUFFER_SIZE = 512;
+	public static final int DEFAULT_BUFFER_SIZE = 512;
+	public static final int DEFAULT_TCP_BUFFER_SIZE = 512;
 	public static final int DEFAULT_TIMEOUT = 5000;
+	public static final int DEFAULT_LISTEN_PORT = 53;
 	
 	public static DatagramSocket open(int timeout) throws SocketException {
 		DatagramSocket socket = new DatagramSocket();
+		socket.setSendBufferSize(DEFAULT_SEND_BUFFER_SIZE);
+		socket.setReceiveBufferSize(DEFAULT_RECV_BUFFER_SIZE);
+		socket.setSoTimeout(timeout);
+		return socket;
+	}
+	
+	public static DatagramSocket open(int port, int timeout) throws SocketException {
+		DatagramSocket socket = new DatagramSocket(port);
 		socket.setSendBufferSize(DEFAULT_SEND_BUFFER_SIZE);
 		socket.setReceiveBufferSize(DEFAULT_RECV_BUFFER_SIZE);
 		socket.setSoTimeout(timeout);
