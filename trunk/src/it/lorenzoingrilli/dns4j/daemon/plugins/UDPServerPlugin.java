@@ -1,8 +1,12 @@
-package it.lorenzoingrilli.dns4j.net;
+package it.lorenzoingrilli.dns4j.daemon.plugins;
 
+import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
+import it.lorenzoingrilli.dns4j.daemon.EventRecv;
+import it.lorenzoingrilli.dns4j.daemon.EventSent;
+import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.protocol.impl.DeserializatorImpl;
-import it.lorenzoingrilli.dns4j.protocol.impl.SerializatorImpl;
+import it.lorenzoingrilli.dns4j.protocol.impl.Serialization;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
 import java.io.IOException;
@@ -12,22 +16,32 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Executor;
 
-public class UDPServer implements Runnable {
+public class UDPServerPlugin implements Runnable, Plugin {
 
 	private int timeout = UDP.DEFAULT_TIMEOUT;
 	private DatagramSocket socket = null;
 	private SyncResolver resolver;
 	private Executor executor;
 	private int port;
+	private EventDispatcher dispatcher;
 	
-	public UDPServer() { }
+	public UDPServerPlugin() { }
 	
-	public UDPServer(int port, SyncResolver resolver, Executor executor) {
+	public UDPServerPlugin(int port, SyncResolver resolver, Executor executor) {
 		this.resolver = resolver;
 		this.executor = executor;
 		this.port = port;
 	}
 	
+	@Override
+	public void init(EventDispatcher dispatcher) {
+		this.dispatcher = dispatcher;
+	}
+
+	@Override
+	public void destroy() {
+	}
+
 	@Override
 	public void run() {
 		try {
@@ -44,11 +58,11 @@ public class UDPServer implements Runnable {
 			executor.execute(new Runnable() {
 				@Override
 				public void run() {
-					Message request = DeserializatorImpl.deserialize(packet.getData());
-					System.out.println("REQUEST  = "+request);
+					Message request = Serialization.deserialize(packet.getData());
+					dispatcher.dispatch(new EventRecv(this, request));
 					Message response = resolver.query(request);
-					System.out.println("RESPONSE = "+response);
-					int len = SerializatorImpl.serialize(response, buffer);
+					dispatcher.dispatch(new EventSent(this, response));
+					int len = Serialization.serialize(response, buffer);
 					try {
 						UDP.send(socket, packet.getAddress(), packet.getPort(), buffer, len);
 					} catch (IOException e) {

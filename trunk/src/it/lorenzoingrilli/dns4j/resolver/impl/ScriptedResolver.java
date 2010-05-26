@@ -19,19 +19,17 @@ public class ScriptedResolver implements SyncResolver {
     
 	private static Logger logger = Logger.getLogger(ScriptedResolver.class.getName());
 	
-    private File file;
-    private ScriptEngineManager manager;
+    private String filename;
+	private ScriptEngineManager manager;
     private ScriptEngine engine;
 
-    public ScriptedResolver(File file) {
-        this.file = file;
-        String extension = getExtension(file);
-        manager = new ScriptEngineManager();
-        engine = manager.getEngineByExtension(extension);
+    public ScriptedResolver() {
     }
     
     @Override
     public Message query(Message request) {
+    	File file = new File(filename);
+    	
     	if(file.isDirectory() || !file.canRead()) {
     		throw new RuntimeException(file.getPath()+" must be a readable file");
     	}
@@ -60,8 +58,19 @@ public class ScriptedResolver implements SyncResolver {
         }
     }
     
-    private static String getExtension(File file) {
-        String fields[] = file.getName().split("\\.");
+    public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+        String extension = getExtension(filename);
+        manager = new ScriptEngineManager();
+        engine = manager.getEngineByExtension(extension);
+	}
+	
+    private static String getExtension(String filename) {
+        String fields[] = filename.split("\\.");
         return fields[fields.length-1];
     }
 

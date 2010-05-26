@@ -34,9 +34,9 @@ public class Zone {
 			List<RR> l = map.get(k);
 			if(l==null) {
 				l = new LinkedList<RR>();
-				map.put(k, l);
-				l.add(rr);
+				map.put(k, l);				
 			}
+			l.add(rr);
 		}
 	}
 	

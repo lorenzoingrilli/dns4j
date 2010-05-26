@@ -1,8 +1,7 @@
 package it.lorenzoingrilli.dns4j.resolver.impl;
 
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.protocol.impl.DeserializatorImpl;
-import it.lorenzoingrilli.dns4j.protocol.impl.SerializatorImpl;
+import it.lorenzoingrilli.dns4j.protocol.impl.Serialization;
 import it.lorenzoingrilli.dns4j.resolver.AsyncEventListener;
 import it.lorenzoingrilli.dns4j.resolver.AsyncResolver;
 import it.lorenzoingrilli.dns4j.resolver.AsyncUnexpectedResponseListener;
@@ -57,7 +56,7 @@ public class UDPAsyncClient implements AsyncResolver {
         queue.add(dr);
         // Invio il messaggio
         byte[] buffer = new byte[512];
-        int i = SerializatorImpl.serialize(request, buffer);
+        int i = Serialization.serialize(request, buffer);
         DatagramPacket packet = new DatagramPacket(buffer, i, address, port);
         try {
             socket.send(packet);
@@ -91,7 +90,7 @@ public class UDPAsyncClient implements AsyncResolver {
             // Leggo messaggi dal socket
             DatagramPacket pResp = new DatagramPacket(buffer, buffer.length);
             socket.receive(pResp);
-            Message resp = DeserializatorImpl.deserialize(buffer);
+            Message resp = Serialization.deserialize(buffer);
             DelayedRequest req = requests.get(resp.getHeader().getId());
             if(req!=null) {
                 requests.remove(resp.getHeader().getId());

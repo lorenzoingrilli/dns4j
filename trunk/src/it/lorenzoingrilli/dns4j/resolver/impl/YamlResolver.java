@@ -12,6 +12,7 @@ import it.lorenzoingrilli.dns4j.protocol.rr.impl.RRImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.SoaImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.TxtImpl;
 
+import java.beans.ConstructorProperties;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -42,13 +43,11 @@ public class YamlResolver extends AuthoritativeResolver {
     public static final int DEFAULT_SOA_EXPIRE = 86400;
     public static final int DEFAULT_SOA_MINIMUM = 3600;
 
-	private String file;
-	private HashMap<ZoneEntryKey, List<RR>> map = new HashMap<ZoneEntryKey, List<RR>>();
+	private String file = DEFAULT_CONF;
 
-	public YamlResolver() throws IOException {
-		this(DEFAULT_CONF);
-	}
+	private HashMap<ZoneEntryKey, List<RR>> map = new HashMap<ZoneEntryKey, List<RR>>();
 	
+	@ConstructorProperties(value={"file"})
 	public YamlResolver(String file) throws IOException {
 		this.file = file;
 		parse();
@@ -58,6 +57,7 @@ public class YamlResolver extends AuthoritativeResolver {
 		YamlReader reader = new YamlReader(new FileReader(file));
 		YamlConfig config = reader.getConfig();
 		config.setClassTag("zone", Zone.class);
+		config.setClassTag("rr", RRImpl.class);
 		config.setClassTag("soa", SoaImpl.class);
 		config.setClassTag("a", AImpl.class);
 		config.setClassTag("aaaa", AAAAImpl.class);		
@@ -95,6 +95,14 @@ public class YamlResolver extends AuthoritativeResolver {
 				qr.getAnswer().add(rr);
 			}
 		return qr;
+	}
+	
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
 	}
 
 }

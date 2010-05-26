@@ -41,7 +41,7 @@
 	<mkdir dir="${docsdir}"/>
 	<javadoc destdir="${docsdir}" author="true" version="true" use="true" windowtitle="dns4j" extdirs="${libdir}">
 		<packageset dir="${srcdir}"/>
-		<bottom><![CDATA[<i>Copyright &#169; Lorenzo Ingrill&igrave;</i>]]></bottom>
+		<bottom><![CDATA[<i>Copyright &#169; <a href="http://www.lorenzoingrilli.it">Lorenzo Ingrill&igrave;</a></i>]]></bottom>
 	</javadoc>
 </target>
 	

@@ -1,35 +1,45 @@
-package it.lorenzoingrilli.dns4j.net;
+package it.lorenzoingrilli.dns4j.daemon.plugins;
 
+import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
+import it.lorenzoingrilli.dns4j.daemon.EventRecv;
+import it.lorenzoingrilli.dns4j.daemon.EventSent;
+import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.net.TCP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.protocol.impl.DeserializatorImpl;
-import it.lorenzoingrilli.dns4j.protocol.impl.SerializatorImpl;
+import it.lorenzoingrilli.dns4j.protocol.impl.Serialization;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.nio.ByteBuffer;
 import java.util.concurrent.Executor;
 
-public class TCPServer implements Runnable {
+public class TCPServerPlugin implements Runnable, Plugin {
 
-	private int timeout = UDP.DEFAULT_TIMEOUT;
 	private ServerSocket ssocket = null;
 	private SyncResolver resolver;
 	private Executor executor;
 	private int port;
+	private EventDispatcher dispatcher;
 	
-	public TCPServer() { }
+	public TCPServerPlugin() { }
 	
-	public TCPServer(int port, SyncResolver resolver, Executor executor) {
+	public TCPServerPlugin(int port, SyncResolver resolver, Executor executor) {
 		this.resolver = resolver;
 		this.executor = executor;
 		this.port = port;
 	}
 	
+	@Override
+	public void init(EventDispatcher dispatcher) {
+		this.dispatcher = dispatcher;
+	}
+
+	@Override
+	public void destroy() {
+	}
+
 	@Override
 	public void run() {
 		try {
@@ -46,33 +56,12 @@ public class TCPServer implements Runnable {
 				@Override
 				public void run() {
 					try {
-					// WARN: we shuold manage multiple request on the same tco connection
-					InputStream is = socket.getInputStream();
-					byte[] array = new byte[2];
-					is.read(array);
-					ByteBuffer bb = ByteBuffer.wrap(array);					
-					int len = DeserializatorImpl.getUShort(bb);
-					final byte buffer[] = new byte[len];
-					
-					 int letti = 0;
-					 int r = 0;
-					 while(r>=0 && letti<len) {
-				            r = is.read(buffer, letti, buffer.length-letti);
-				            letti += r;
-				            System.out.println(letti);
-					 }
-					 
-					Message request = DeserializatorImpl.deserialize(buffer);
-					System.out.println("REQUEST  = "+request);
+					// WARN: we shuold manage multiple request on the same tcp connection
+					Message request = Serialization.deserialize(socket.getInputStream());
+					dispatcher.dispatch(new EventRecv(this, request));
 					Message response = resolver.query(request);
-					System.out.println("RESPONSE = "+response);
-					byte[] resp = new byte[TCP.DEFAULT_BUFFER_SIZE];
-					bb.rewind();
-					len = SerializatorImpl.serialize(response, resp);
-					SerializatorImpl.putUShort(bb, len);
-					OutputStream os = socket.getOutputStream();
-					os.write(array);
-					os.write(resp);
+					dispatcher.dispatch(new EventSent(this, response));
+					Serialization.serialize(response, socket.getOutputStream());
 					//socket.close();
 					}
 					catch(IOException e) {
