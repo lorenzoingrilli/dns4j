@@ -5,7 +5,12 @@ import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 import java.util.List;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * DNS message.
+ * 
+ * Defined in RFC 1035.
+ * 
+ * @author Lorenzo Ingrilli'
+ * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc1035.txt">RFC 1035</a> 
  */
 public interface Message {
     public Header getHeader();

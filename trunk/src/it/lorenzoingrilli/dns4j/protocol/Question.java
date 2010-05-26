@@ -1,7 +1,12 @@
 package it.lorenzoingrilli.dns4j.protocol;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * Question part of DNS message.
+ * 
+ * Defined in RFC 1035.
+ * 
+ * @author Lorenzo Ingrilli'
+ * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc1035.txt">RFC 1035</a> 
  */
 public interface Question {
     public String getQname();

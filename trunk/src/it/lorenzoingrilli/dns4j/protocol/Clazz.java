@@ -1,7 +1,12 @@
 package it.lorenzoingrilli.dns4j.protocol;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * RR Class code.
+ * 
+ * Defined in RFC 1035 (two octets).
+ * 
+ * @author Lorenzo Ingrilli'
+ * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc1035.txt">RFC 1035</a> 
  */
 public class Clazz {
 

@@ -1,16 +1,14 @@
 package it.lorenzoingrilli.dns4j.protocol;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * Header of DNS message.
+ * 
+ * Defined in RFC 1035.
+ * 
+ * @author Lorenzo Ingrilli'
+ * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc1035.txt">RFC 1035</a> 
  */
 public interface Header {
-    public static final int RET_OK = 0;
-    public static final int RET_ERR_FORMAT = 1;
-    public static final int RET_ERR_FAILURE = 2;
-    public static final int RET_ERR_NAME = 3;
-    public static final int RET_ERR_NOTIMPL = 4;
-    public static final int RET_ERR_REFUSED = 5;
-
     public static final boolean QUESTION = false;
     public static final boolean ANSWER = true;
 
