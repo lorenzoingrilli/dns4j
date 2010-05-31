@@ -15,9 +15,10 @@ public class PluginManagerImpl implements PluginManager, EventDispatcher{
 	private LinkedList<Plugin> plugins= new LinkedList<Plugin>();
 	private LinkedList<PluginEventReceiver> eplugins= new LinkedList<PluginEventReceiver>();
 	private ArrayBlockingQueue<Event> events = new ArrayBlockingQueue<Event>(1000, true);
+	private Thread dispatchThread;
 	
 	public PluginManagerImpl() {
-		Thread t = new Thread(new Runnable() {			
+		dispatchThread = new Thread(new Runnable() {			
 			@Override
 			public void run() { 
 				while(!Thread.currentThread().isInterrupted()) {
@@ -34,8 +35,18 @@ public class PluginManagerImpl implements PluginManager, EventDispatcher{
 				}				
 			}
 		});
-		t.setDaemon(true);
-		t.start();
+		dispatchThread.setDaemon(true);
+	}
+	
+	@Override
+	public void destroy() {
+		unloadAll();
+		dispatchThread.interrupt();
+	}
+
+	@Override
+	public void init() {
+		dispatchThread.start();
 	}
 	
 	@Override

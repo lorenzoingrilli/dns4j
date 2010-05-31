@@ -2,7 +2,8 @@ package it.lorenzoingrilli.dns4j.resolver.impl;
 
 import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.protocol.impl.Serialization;
+import it.lorenzoingrilli.dns4j.protocol.Serializer;
+import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class DNSClient implements SyncResolver {
     private int port;
     private int timeout = DEFAULT_TIMEOUT;
     private int numAttempts = DEFAULT_NUM_ATTEMPTS;
+    private Serializer serializer = new SerializerImpl();
 
     public DNSClient(InetAddress host, int port) {
         this.host = host;
@@ -96,7 +98,7 @@ public class DNSClient implements SyncResolver {
     
     private Message query(InetAddress host, int port, Message request, int numTries, int timeout) throws IOException {
         byte[] buffer = new byte[512];
-        int len = Serialization.serialize(request, buffer);
+        int len = serializer.serialize(request, buffer);
     	Message resp = null;
     	int triesCount = 0;
     	boolean success = false;    	
@@ -107,7 +109,7 @@ public class DNSClient implements SyncResolver {
 	        	UDP.send(socket, host, port, buffer, len);
 	            DatagramPacket udpResp = UDP.receive(socket, buffer);
 	            //TODO check: src host/port should be equals to request host/port
-	            resp = Serialization.deserialize(buffer);            
+	            resp = serializer.deserialize(buffer);            
 	            if(resp.getHeader().getId()==request.getHeader().getId())
 	                success = true;
 	            else

@@ -6,9 +6,10 @@ import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
 import it.lorenzoingrilli.dns4j.net.TCP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.protocol.impl.Serialization;
+import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
+import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,14 +21,16 @@ public class TCPServerPlugin implements Runnable, Plugin {
 	private ServerSocket ssocket = null;
 	private SyncResolver resolver;
 	private Executor executor;
+	private Serializer serializer;
+
 	private int port;
 	private EventDispatcher dispatcher;
 	
-	public TCPServerPlugin() { }
-	
-	public TCPServerPlugin(int port, SyncResolver resolver, Executor executor) {
+	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
+	public TCPServerPlugin(int port, SyncResolver resolver, Executor executor, Serializer serializer) {
 		this.resolver = resolver;
 		this.executor = executor;
+		this.serializer = serializer;
 		this.port = port;
 	}
 	
@@ -57,11 +60,11 @@ public class TCPServerPlugin implements Runnable, Plugin {
 				public void run() {
 					try {
 					// WARN: we shuold manage multiple request on the same tcp connection
-					Message request = Serialization.deserialize(socket.getInputStream());
+					Message request = serializer.deserialize(socket.getInputStream());
 					dispatcher.dispatch(new EventRecv(this, request));
-					Message response = resolver.query(request);
+					Message response = resolver.query(request);					
+					serializer.serialize(response, socket.getOutputStream());
 					dispatcher.dispatch(new EventSent(this, response));
-					Serialization.serialize(response, socket.getOutputStream());
 					//socket.close();
 					}
 					catch(IOException e) {
@@ -106,6 +109,14 @@ public class TCPServerPlugin implements Runnable, Plugin {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	public Serializer getSerializer() {
+		return serializer;
+	}
+
+	public void setSerializer(Serializer serializer) {
+		this.serializer = serializer;
 	}
 
 }

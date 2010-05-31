@@ -20,7 +20,7 @@ import org.apache.commons.cli.ParseException;
 /**
  * DNS command line client
  * 
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class nsc {
 

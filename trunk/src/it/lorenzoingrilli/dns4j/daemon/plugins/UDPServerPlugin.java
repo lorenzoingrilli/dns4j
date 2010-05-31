@@ -6,9 +6,10 @@ import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
 import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.protocol.impl.Serialization;
+import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
+import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -22,15 +23,16 @@ public class UDPServerPlugin implements Runnable, Plugin {
 	private DatagramSocket socket = null;
 	private SyncResolver resolver;
 	private Executor executor;
+	private Serializer serializer;
 	private int port;
 	private EventDispatcher dispatcher;
 	
-	public UDPServerPlugin() { }
-	
-	public UDPServerPlugin(int port, SyncResolver resolver, Executor executor) {
+	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
+	public UDPServerPlugin(int port, SyncResolver resolver, Executor executor, Serializer serializer) {
 		this.resolver = resolver;
 		this.executor = executor;
 		this.port = port;
+		this.serializer = serializer;
 	}
 	
 	@Override
@@ -58,16 +60,16 @@ public class UDPServerPlugin implements Runnable, Plugin {
 			executor.execute(new Runnable() {
 				@Override
 				public void run() {
-					Message request = Serialization.deserialize(packet.getData());
+					Message request = serializer.deserialize(packet.getData());
 					dispatcher.dispatch(new EventRecv(this, request));
-					Message response = resolver.query(request);
-					dispatcher.dispatch(new EventSent(this, response));
-					int len = Serialization.serialize(response, buffer);
+					Message response = resolver.query(request);					
+					int len = serializer.serialize(response, buffer);
 					try {
 						UDP.send(socket, packet.getAddress(), packet.getPort(), buffer, len);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					dispatcher.dispatch(new EventSent(this, response));
 				}
 			});
 		}
@@ -102,6 +104,14 @@ public class UDPServerPlugin implements Runnable, Plugin {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	public Serializer getSerializer() {
+		return serializer;
+	}
+
+	public void setSerializer(Serializer serializer) {
+		this.serializer = serializer;
 	}
 
 }

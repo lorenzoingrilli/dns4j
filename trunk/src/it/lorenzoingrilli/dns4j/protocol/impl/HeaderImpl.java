@@ -7,7 +7,7 @@ import it.lorenzoingrilli.dns4j.protocol.Header;
  */
 public class HeaderImpl implements Header {
 
-    private int id;
+	private int id;
     private boolean query;
     private int opcode;
     private boolean authoritative;
@@ -30,6 +30,64 @@ public class HeaderImpl implements Header {
             ", z="+getZ()+", rcode="+getResponseCode()+", qd="+qdcount+
             ", an="+ancount+", ns="+nscount+", ar="+arcount+")";
     }
+    
+    @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ancount;
+		result = prime * result + arcount;
+		result = prime * result + (authoritative ? 1231 : 1237);
+		result = prime * result + id;
+		result = prime * result + nscount;
+		result = prime * result + opcode;
+		result = prime * result + qdcount;
+		result = prime * result + (query ? 1231 : 1237);
+		result = prime * result + (recursionAvailable ? 1231 : 1237);
+		result = prime * result + (recursionDesidered ? 1231 : 1237);
+		result = prime * result + responseCode;
+		result = prime * result + (truncated ? 1231 : 1237);
+		result = prime * result + z;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HeaderImpl other = (HeaderImpl) obj;
+		if (ancount != other.ancount)
+			return false;
+		if (arcount != other.arcount)
+			return false;
+		if (authoritative != other.authoritative)
+			return false;
+		if (id != other.id)
+			return false;
+		if (nscount != other.nscount)
+			return false;
+		if (opcode != other.opcode)
+			return false;
+		if (qdcount != other.qdcount)
+			return false;
+		if (query != other.query)
+			return false;
+		if (recursionAvailable != other.recursionAvailable)
+			return false;
+		if (recursionDesidered != other.recursionDesidered)
+			return false;
+		if (responseCode != other.responseCode)
+			return false;
+		if (truncated != other.truncated)
+			return false;
+		if (z != other.z)
+			return false;
+		return true;
+	}
 
     @Override
     public int getId() {

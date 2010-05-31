@@ -1,7 +1,12 @@
 package it.lorenzoingrilli.dns4j.protocol;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * constants for: Resource records type
+ * 
+ * Defined in RFC 1035
+ * 
+ * @author Lorenzo Ingrilli'
+ * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc1035.txt">RFC 1035</a> 
  */
 public class Type {
 
@@ -21,6 +26,22 @@ public class Type {
     public static final int MINFO = 14;
     public static final int MX = 15;
     public static final int TXT = 16;
+    public static final int ISDN = 20;
+    public static final int SIG = 24;
+    public static final int GPOS = 27;
+    public static final int LOC = 29;
     public static final int AAAA = 28;
+    public static final int SRV = 33;
+    public static final int NAPTR = 35;
+    public static final int KX = 36;
+    public static final int A6 = 38;
+    public static final int DNAME = 39;
+    public static final int DS = 43;
+    public static final int TKEY = 249;
+    public static final int TSIG = 250;
+    public static final int AXFR = 252;
+    public static final int MAILB = 253;
+    public static final int MAILA = 254;
+    public static final int STAR = 255;
     
 }

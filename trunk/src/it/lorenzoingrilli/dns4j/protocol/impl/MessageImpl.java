@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MessageImpl implements Message {
 
-    private Header header = new HeaderImpl();
+	private Header header = new HeaderImpl();
     private List<Question> question = new LinkedList<Question>();
     private List<RR> answer = new LinkedList<RR>();
     private List<RR> authority = new LinkedList<RR>();
@@ -23,6 +23,58 @@ public class MessageImpl implements Message {
     public String toString() {
         return "Message(header="+header+", question="+question+", answer="+answer+", authority"+authority+", additional="+additional+")";
     }
+    
+    @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((additional == null) ? 0 : additional.hashCode());
+		result = prime * result + ((answer == null) ? 0 : answer.hashCode());
+		result = prime * result
+				+ ((authority == null) ? 0 : authority.hashCode());
+		result = prime * result + ((header == null) ? 0 : header.hashCode());
+		result = prime * result
+				+ ((question == null) ? 0 : question.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MessageImpl other = (MessageImpl) obj;
+		if (additional == null) {
+			if (other.additional != null)
+				return false;
+		} else if (!additional.equals(other.additional))
+			return false;
+		if (answer == null) {
+			if (other.answer != null)
+				return false;
+		} else if (!answer.equals(other.answer))
+			return false;
+		if (authority == null) {
+			if (other.authority != null)
+				return false;
+		} else if (!authority.equals(other.authority))
+			return false;
+		if (header == null) {
+			if (other.header != null)
+				return false;
+		} else if (!header.equals(other.header))
+			return false;
+		if (question == null) {
+			if (other.question != null)
+				return false;
+		} else if (!question.equals(other.question))
+			return false;
+		return true;
+	}
 
     @Override
     public Header getHeader() {

@@ -1,13 +1,11 @@
 package it.lorenzoingrilli.dns4j.cli;
 
 /**
- * NameServer Test tool
- *
- * Analyze nameserver daemon and report bugs and other info.
+ * NameServer Benchmark utility
  *
  * @author Lorenzo Ingrilli'
  */
-public class nst {
+public class nsb {
     
     public static void main(String[] args) throws Exception {
         //TODO implementation

@@ -1,7 +1,8 @@
 package it.lorenzoingrilli.dns4j.resolver.impl;
 
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.protocol.impl.Serialization;
+import it.lorenzoingrilli.dns4j.protocol.Serializer;
+import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
 import it.lorenzoingrilli.dns4j.resolver.AsyncEventListener;
 import it.lorenzoingrilli.dns4j.resolver.AsyncResolver;
 import it.lorenzoingrilli.dns4j.resolver.AsyncUnexpectedResponseListener;
@@ -19,10 +20,11 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
-public class UDPAsyncClient implements AsyncResolver {
+public class AsyncDNSClient implements AsyncResolver {
 
+	private Serializer serializer = new SerializerImpl();
     private InetAddress address;
     private int port;
 
@@ -34,7 +36,7 @@ public class UDPAsyncClient implements AsyncResolver {
     private ConcurrentHashMap<Integer, DelayedRequest> requests = new ConcurrentHashMap<Integer, DelayedRequest>();
     private DelayQueue<DelayedRequest> queue = new DelayQueue<DelayedRequest>();
 
-    public UDPAsyncClient(InetAddress address, int port) throws UnknownHostException, SocketException {
+    public AsyncDNSClient(InetAddress address, int port) throws UnknownHostException, SocketException {
         this.address = address;
         this.port = port;
         socket = new DatagramSocket();
@@ -56,7 +58,7 @@ public class UDPAsyncClient implements AsyncResolver {
         queue.add(dr);
         // Invio il messaggio
         byte[] buffer = new byte[512];
-        int i = Serialization.serialize(request, buffer);
+        int i = serializer.serialize(request, buffer);
         DatagramPacket packet = new DatagramPacket(buffer, i, address, port);
         try {
             socket.send(packet);
@@ -90,7 +92,7 @@ public class UDPAsyncClient implements AsyncResolver {
             // Leggo messaggi dal socket
             DatagramPacket pResp = new DatagramPacket(buffer, buffer.length);
             socket.receive(pResp);
-            Message resp = Serialization.deserialize(buffer);
+            Message resp = serializer.deserialize(buffer);
             DelayedRequest req = requests.get(resp.getHeader().getId());
             if(req!=null) {
                 requests.remove(resp.getHeader().getId());
