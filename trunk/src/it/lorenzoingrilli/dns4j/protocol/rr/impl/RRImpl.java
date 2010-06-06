@@ -3,7 +3,7 @@ package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class RRImpl implements RR {
 

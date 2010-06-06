@@ -1,7 +1,7 @@
 package it.lorenzoingrilli.dns4j.protocol.rr.impl;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class RRSpecificImpl extends RRImpl {
 

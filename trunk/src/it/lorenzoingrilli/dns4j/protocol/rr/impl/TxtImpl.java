@@ -5,7 +5,7 @@ import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Txt;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class TxtImpl extends RRSpecificImpl implements Txt {
 

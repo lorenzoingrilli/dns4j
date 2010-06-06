@@ -5,7 +5,7 @@ import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Ptr;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class PtrImpl extends RRSpecificImpl implements Ptr {
 

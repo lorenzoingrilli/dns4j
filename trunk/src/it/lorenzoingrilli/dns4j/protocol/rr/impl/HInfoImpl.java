@@ -5,7 +5,7 @@ import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.HInfo;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class HInfoImpl extends RRSpecificImpl implements HInfo {
 

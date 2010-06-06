@@ -3,7 +3,7 @@ package it.lorenzoingrilli.dns4j.protocol.impl;
 import it.lorenzoingrilli.dns4j.protocol.Question;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class QuestionImpl implements Question {
 

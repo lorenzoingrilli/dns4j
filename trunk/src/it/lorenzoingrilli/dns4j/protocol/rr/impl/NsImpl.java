@@ -4,6 +4,9 @@ import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Ns;
 
+/**
+ * @author Lorenzo Ingrilli'
+ */
 public class NsImpl extends RRSpecificImpl implements Ns {
 	
 	private String nsdName;

@@ -35,7 +35,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class SerializerImpl implements Serializer {
 

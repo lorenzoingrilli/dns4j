@@ -7,7 +7,7 @@ import it.lorenzoingrilli.dns4j.protocol.rr.AAAA;
 import java.net.Inet6Address;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class AAAAImpl extends RRSpecificImpl implements AAAA {
 

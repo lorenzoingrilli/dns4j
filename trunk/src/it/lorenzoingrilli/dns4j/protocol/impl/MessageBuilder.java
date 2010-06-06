@@ -5,7 +5,7 @@ import it.lorenzoingrilli.dns4j.protocol.Question;
 import java.util.Random;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class MessageBuilder {
 	

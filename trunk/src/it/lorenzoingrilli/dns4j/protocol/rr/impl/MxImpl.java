@@ -4,6 +4,9 @@ import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.Mx;
 
+/**
+ * @author Lorenzo Ingrilli'
+ */
 public class MxImpl extends RRSpecificImpl implements Mx {
 
 	private String exchange;
