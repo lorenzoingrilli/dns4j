@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
 
 /**
@@ -39,7 +41,11 @@ public class UDP {
 	}
 	
     public static DatagramPacket send(DatagramSocket socket, InetAddress host, int port, byte[] request, int requestLen) throws IOException {
-        DatagramPacket packet = new DatagramPacket(request, requestLen, host, port);
+        return send(socket, new InetSocketAddress(host, port), request, requestLen);
+    }
+    
+    public static DatagramPacket send(DatagramSocket socket, SocketAddress socketAddress, byte[] request, int requestLen) throws IOException {
+        DatagramPacket packet = new DatagramPacket(request, requestLen, socketAddress);
         socket.send(packet);
         return packet;
     }
