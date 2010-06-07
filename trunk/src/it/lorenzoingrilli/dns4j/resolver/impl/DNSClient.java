@@ -27,16 +27,13 @@ public class DNSClient implements SyncResolver {
 
     private Serializer serializer = new SerializerImpl();
     
-    private InetAddress host;
-	private int port;
     private int timeout = DEFAULT_TIMEOUT;
     private int numAttempts = DEFAULT_NUM_ATTEMPTS;
     private boolean udpEnabled = true;
     private boolean tcpEnabled = true;
     private List<InetSocketAddress> servers = new LinkedList<InetSocketAddress>();
 
-	public DNSClient(InetAddress host, int port) {
-        addServer(host, port);
+	public DNSClient() {
     }
 
     @Override
@@ -46,7 +43,7 @@ public class DNSClient implements SyncResolver {
 			if(udpEnabled)
 				resp = udpQueryAll(request, numAttempts, timeout);
 			if( (resp==null || resp.getHeader().isTruncated()) && tcpEnabled) {
-	            resp = tcpQuery(host, port, request);
+	            //resp = tcpQuery(host, port, request);
 	        }
 			return resp;
 		} catch (IOException e) {
@@ -83,6 +80,7 @@ public class DNSClient implements SyncResolver {
 	                resp = null;
 	        }
 	        catch(SocketTimeoutException e) {
+	        	e.printStackTrace();
 	        }
         UDP.close(socket);
         return resp;
@@ -126,6 +124,10 @@ public class DNSClient implements SyncResolver {
 	
 	public void addServer(InetAddress address, int port) {
 		servers.add(new InetSocketAddress(address, port));
+	}
+	
+	public void addServer(InetSocketAddress socketAddress) {
+		servers.add(socketAddress);
 	}
 	
 	public List<InetSocketAddress> getServers() {
