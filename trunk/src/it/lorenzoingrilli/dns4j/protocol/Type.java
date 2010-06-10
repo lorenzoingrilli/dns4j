@@ -26,6 +26,7 @@ public class Type {
     public static final int MINFO = 14;
     public static final int MX = 15;
     public static final int TXT = 16;
+    public static final int AFSDB = 18;
     public static final int ISDN = 20;
     public static final int SIG = 24;
     public static final int GPOS = 27;

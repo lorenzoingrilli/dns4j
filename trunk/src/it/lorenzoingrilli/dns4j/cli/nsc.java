@@ -31,7 +31,7 @@ import org.apache.commons.cli.ParseException;
 public class nsc {
 
 	private static final String DEFAULT_SERVER = "localhost";
-	private static final String DEFAULT_PORT = "53";
+	private static final int DEFAULT_PORT = 53;
 	private static final String DEFAULT_TIMEOUT = "5000";
 	private static final String DEFAULT_ATTEMPTS = "3";
 	private static final String DEFAULT_OUTPUT = "human";
@@ -45,7 +45,6 @@ public class nsc {
     	options = new Options();
     	options.addOption(new Option("v", "verbose", false, "Verbose log level"));
     	options.addOption(new Option("s", "server", true, "Nameserver host (default localhost)"));
-    	options.addOption(new Option("p", "port", true, "Nameserver port (default 53)"));
     	options.addOption(new Option("n", "name", true, "Name to query (mandatory)"));
     	options.addOption(new Option("N", "no-recursion", false, "No recursion desidered"));
     	options.addOption(new Option("t", "type", true, "query type (default A)"));
@@ -67,12 +66,26 @@ public class nsc {
     	String name = cmdline.getOptionValue('n');
     	int type = Integer.parseInt(cmdline.getOptionValue('t', Type.A+""));
     	int clazz = Integer.parseInt(cmdline.getOptionValue('c', Clazz.IN+""));
+    	
+       	// read settings from /etc/resolv.conf (if file exists)
+       	configureResolvConf(client);
 
-    	// main nameserver (if specified)
+    	// nameserver list (if specified)
     	if(cmdline.hasOption('s')) {
-        	InetAddress address = InetAddress.getByName(cmdline.getOptionValue('s'));
-        	int port = Integer.parseInt(cmdline.getOptionValue('p', DEFAULT_PORT));
-        	client.addServer(address, port);
+    		List<InetSocketAddress> list = new LinkedList<InetSocketAddress>();    		
+    		String serverString = cmdline.getOptionValue('s');
+    		String servers[] = serverString.split(",");
+    		for(String s: servers) {
+    			String fields[] = s.split("\\-"); 
+    			InetAddress addr = InetAddress.getByName(fields[0]);
+    			int port = Integer.parseInt(fields[1]);
+    			list.add(new InetSocketAddress(addr, port));
+    		}
+        	client.setServers(list);
+    	}
+    	// if no name server was specificed (nor in /etc/resolv.conf nor in '-s' option) use localhost
+    	if(client.getServers().size()==0) {
+    		client.addServer(InetAddress.getByName(DEFAULT_SERVER), DEFAULT_PORT);
     	}
     	
     	// recursion desidered flag
@@ -88,12 +101,11 @@ public class nsc {
     	
        	client.setTimeout(timeout);
        	client.setNumAttempts(numAttempts);
-       	
-       	// read settings from /etc/resolv.conf (if file exists)
-       	configureResolvConf(client);
 
+       	MessageBuilder mb = new MessageBuilder();
+       	
     	Message req = 
-    		new MessageBuilder()
+    		mb   		
     		.question()
     		.recursionDesidered(recursion)
     		.addQuestion(name, type, clazz)

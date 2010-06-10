@@ -10,15 +10,20 @@ import java.util.Random;
 /**
  * Helper to compose DNS message
  * 
+ * Be careful: this class is not thread safe.
+ * 
  * @author Lorenzo Ingrilli'
  */
 public class MessageBuilder {
 	
+	/** Message transaction id is between 0 and 65535 */
 	private static final int MAX_ID = 65535;
-		
-	private Message message = null;
+	
+	/** Random number generation (used to generate random id)*/
 	private Random random = null;
-
+	
+	private Message message = null;
+	
 	public MessageBuilder() {		
 		random = new Random(System.currentTimeMillis());
 		create();
@@ -26,125 +31,150 @@ public class MessageBuilder {
 	
 	public MessageBuilder create() {
 		message = new MessageImpl();
-		setId(random.nextInt(MAX_ID));
+		id(random.nextInt(MAX_ID));
 		return this;
 	}
 	
+	/** Return the composed message */
 	public Message message() {
 		return message;
 	}
 	
-	public MessageBuilder setId(int id) {
+	/** Set transaction id in header */
+	public MessageBuilder id(int id) {
 		message.getHeader().setId(id);
 		return this;
 	}
 	
+	/** Add a question in the questions part */
 	public MessageBuilder addQuestion(Question q) {
 		message.getQuestions().add(q);
 		message.getHeader().setQdCount(message.getHeader().getQdCount()+1);
 		return this;
 	}
 	
+	/** Add a question in the questions part */
 	public MessageBuilder addQuestion(String qname, int qtype, int qclass) {		
 		return this.addQuestion(new QuestionImpl(qname, qtype, qclass));
 	}
 	
+	/** Add a resource record in answer part*/
 	public MessageBuilder addAnswer(RR rr) {
 		message.getAnswer().add(rr);
 		message.getHeader().setAnCount(message.getHeader().getAnCount()+1);
 		return this;
 	}
 	
+	/** Add a resource record in authority part*/
 	public MessageBuilder addAuthority(RR rr) {
 		message.getAuthority().add(rr);
 		message.getHeader().setNsCount(message.getHeader().getNsCount()+1);
 		return this;
 	}
 	
+	/** Add a resource record in additional part*/
 	public MessageBuilder addAdditional(RR rr) {
 		message.getAdditional().add(rr);
 		message.getHeader().setArCount(message.getHeader().getArCount()+1);
 		return this;
 	}
 
+	/** Set recursion desidered (RD) flag */
 	public MessageBuilder recursionDesidered(boolean flag) {
 		message.getHeader().setRecursionDesidered(flag);
 		return this;
 	}
 	
+	/** Set recursion desidered (RD) flag to TRUE */
 	public MessageBuilder recursionDesidered() {
 		return recursionDesidered(true);
 	}
 	
+	/** Set recursion desidered (RD) flag to FALSE */
 	public MessageBuilder noRecursionDesidered() {
 		return recursionDesidered(false);
 	}
 	
+	/** Set authoritative answer (AA) flag */
 	public MessageBuilder authoritative(boolean flag) {
 		message.getHeader().setAuthoritative(flag);
 		return this;
 	}
 	
+	/** Set authoritative answer (AA) flag to TRUE */
 	public MessageBuilder authoritative() {		
 		return authoritative(true);
 	}
 	
+	/** Set authoritative answer (AA) flag to FALSE */
 	public MessageBuilder notAuthoritative() {		
 		return authoritative(false);
 	}
 	
+	/** Set opcode field */
 	public MessageBuilder opcode(int opcode) {
 		message.getHeader().setOpcode(opcode);
 		return this;
 	}
 	
+	/** Set query flag (false=QUESTION, true=ANSWER) */
 	public MessageBuilder query(boolean flag) {
 		message.getHeader().setQuery(flag);
 		return this;
 	}
 	
+	/** Set query flag to QUESTION */
 	public MessageBuilder question() {
 		return query(Header.QUESTION);
 	}
 	
+	/** Set query flag to ANSWER */
 	public MessageBuilder answer() {
 		return query(Header.ANSWER);
 	}
 	
+	/** Set recursion available (RA) flag */
 	public MessageBuilder recursionAvailable(boolean flag) {
 		message.getHeader().setRecursionAvailable(flag);
 		return this;
 	}
 	
+	/** Set recursion available (RA) flag to TRUE */
 	public MessageBuilder recursionAvailable() {
 		return recursionAvailable(true);
 	}
 	
+	/** Set recursion available (RA) flag to FALSE */
 	public MessageBuilder noRecursionAvailable() {
 		return recursionAvailable(false);
 	}
 	
+	/** Set response code field */
 	public MessageBuilder responseCode(int responseCode) {
 		message.getHeader().setResponseCode(responseCode);
 		return this;
 	}
 	
+	/** Set truncation (TC) flag */
 	public MessageBuilder truncated(boolean flag) {
 		message.getHeader().setTruncated(flag);
 		return this;
 	}
 	
+	/** Set recursion available (RA) flag to TRUE */
 	public MessageBuilder truncated() {
 		return truncated(true);
 	}
 	
+	/** Set recursion available (RA) flag to FALSE */
 	public MessageBuilder notTruncated() {
 		return truncated(false);
 	}
 	
+	/** Set Z field */
 	public MessageBuilder z(int z) {
 		message.getHeader().setZ(z);
 		return this;
 	}
-		
+
 }
