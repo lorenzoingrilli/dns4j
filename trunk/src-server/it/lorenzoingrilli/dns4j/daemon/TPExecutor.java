@@ -2,11 +2,16 @@ package it.lorenzoingrilli.dns4j.daemon;
 
 import java.beans.ConstructorProperties;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class TPExecutor extends ThreadPoolExecutor {
 
+	public static Executor getDefault() {
+		return new TPExecutor(1, 15, 500, 1000);
+	}
+	
 	private int queueSize;
 
 	@ConstructorProperties(value={"corePoolSize", "maximumPoolSize", "keepAliveTime", "queueSize"})

@@ -1,10 +1,12 @@
 package it.lorenzoingrilli.dns4j.daemon;
 
 import it.lorenzoingrilli.dns4j.cli.CLI;
+import it.lorenzoingrilli.dns4j.daemon.plugins.JMXPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.LogPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.TCPServerPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.UDPServerPlugin;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
+import it.lorenzoingrilli.dns4j.resolver.impl.ScriptedResolver;
 import it.lorenzoingrilli.dns4j.resolver.impl.YamlResolver;
 
 import java.io.File;
@@ -23,7 +25,7 @@ import com.esotericsoftware.yamlbeans.YamlReader;
  */
 public class nsd extends CLI {
     
-	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"nsd.conf";
+	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"nsd.yml";
 	
 	public static void main(String[] args) throws Exception {    	
 		nsd _nsd = new nsd(args);
@@ -48,9 +50,11 @@ public class nsd extends CLI {
 		 config.setClassTag("executor", TPExecutor.class);
 		 config.setClassTag("serializer", SerializerImpl.class);
 		 config.setClassTag("yamlresolver", YamlResolver.class);
+		 config.setClassTag("scriptedresolver", ScriptedResolver.class);
 		 config.setClassTag("log", LogPlugin.class);		 
 		 config.setClassTag("tcp", TCPServerPlugin.class);
 		 config.setClassTag("udp", UDPServerPlugin.class);
+		 config.setClassTag("jmx", JMXPlugin.class);
 			
 		 pm.init();
 		 Object param = null;

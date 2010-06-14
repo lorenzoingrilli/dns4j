@@ -4,9 +4,11 @@ import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
 import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.daemon.TPExecutor;
 import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
+import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
 import java.beans.ConstructorProperties;
@@ -30,9 +32,9 @@ public class UDPServerPlugin implements Runnable, Plugin {
 	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
 	public UDPServerPlugin(int port, SyncResolver resolver, Executor executor, Serializer serializer) {
 		this.resolver = resolver;
-		this.executor = executor;
-		this.port = port;
-		this.serializer = serializer;
+		this.executor = executor!=null?executor:TPExecutor.getDefault();
+		this.serializer = serializer!=null?serializer:new SerializerImpl();
+		this.port = port;		
 	}
 	
 	@Override
@@ -62,7 +64,8 @@ public class UDPServerPlugin implements Runnable, Plugin {
 				public void run() {
 					Message request = serializer.deserialize(packet.getData());
 					dispatcher.dispatch(new EventRecv(this, request));
-					Message response = resolver.query(request);					
+					Message response = resolver.query(request);
+					if(response==null) return;
 					int len = serializer.serialize(response, buffer);
 					try {
 						UDP.send(socket, packet.getAddress(), packet.getPort(), buffer, len);

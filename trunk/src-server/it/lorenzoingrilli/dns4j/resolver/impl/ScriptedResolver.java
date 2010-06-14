@@ -58,15 +58,15 @@ public class ScriptedResolver implements SyncResolver {
         }
     }
     
-    public String getFilename() {
+    public String getFile() {
 		return filename;
 	}
 
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public void setFile(String filename) {		
         String extension = getExtension(filename);
         manager = new ScriptEngineManager();
         engine = manager.getEngineByExtension(extension);
+        this.filename = filename;
 	}
 	
     private static String getExtension(String filename) {

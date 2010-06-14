@@ -5,6 +5,7 @@ import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 
+import java.util.Collection;
 import java.util.Random;
 
 /**
@@ -46,11 +47,28 @@ public class MessageBuilder {
 		return this;
 	}
 	
+	/** Set transaction id as in input message */
+	public MessageBuilder id(Message message) {
+		return id(message.getHeader().getId());
+	}
+	
 	/** Add a question in the questions part */
 	public MessageBuilder addQuestion(Question q) {
 		message.getQuestions().add(q);
 		message.getHeader().setQdCount(message.getHeader().getQdCount()+1);
 		return this;
+	}
+	
+	/** Add a question list in the questions part */
+	public MessageBuilder addQuestions(Collection<Question> questions) {
+		for(Question q: questions)
+			addQuestion(q);
+		return this;
+	}
+	
+	/** Add a question list as in input message */
+	public MessageBuilder addQuestions(Message message) {
+		return addQuestions(message.getQuestions());
 	}
 	
 	/** Add a question in the questions part */
@@ -85,6 +103,11 @@ public class MessageBuilder {
 		return this;
 	}
 	
+	/** Set recursion desidered (RD) flag as in input message */
+	public MessageBuilder recursionDesidered(Message message) {
+		return recursionDesidered(message.getHeader().isRecursionDesidered());
+	}
+		
 	/** Set recursion desidered (RD) flag to TRUE */
 	public MessageBuilder recursionDesidered() {
 		return recursionDesidered(true);
@@ -131,6 +154,15 @@ public class MessageBuilder {
 	/** Set query flag to ANSWER */
 	public MessageBuilder answer() {
 		return query(Header.ANSWER);
+	}
+	
+	/** Set query flag to ANSWER and copy questions, rd flag, id from input message */
+	public MessageBuilder answer(Message message) {
+		query(Header.ANSWER);
+		id(message);
+		addQuestions(message);
+		recursionDesidered(message);
+		return this;
 	}
 	
 	/** Set recursion available (RA) flag */
