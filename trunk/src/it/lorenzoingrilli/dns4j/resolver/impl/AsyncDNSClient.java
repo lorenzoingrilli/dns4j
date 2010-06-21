@@ -43,16 +43,13 @@ public class AsyncDNSClient implements AsyncResolver {
         socket.setSoTimeout(250);
     }
 
-    public Message query(Message request) {
-        _query(request, null);
-        return null;
+    @Override
+    public void query(Message request) {
+    	query(request, null);
     }
-
+    
+    @Override
     public void query(Message request, AsyncEventListener listener) {
-        _query(request, listener);
-    }
-
-    private void _query(Message request, AsyncEventListener listener) {
         DelayedRequest dr= new DelayedRequest(request, listener);
         requests.put(request.getHeader().getId(), dr);
         queue.add(dr);

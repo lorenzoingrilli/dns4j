@@ -32,7 +32,7 @@ public class MessageBuilder {
 	
 	public MessageBuilder create() {
 		message = new MessageImpl();
-		id(random.nextInt(MAX_ID));
+		randomId();
 		return this;
 	}
 	
@@ -40,6 +40,13 @@ public class MessageBuilder {
 	public Message message() {
 		return message;
 	}
+	
+	/** Set random transaction id in header */
+	public MessageBuilder randomId() {
+		id(random.nextInt(MAX_ID));
+		return this;
+	}
+
 	
 	/** Set transaction id in header */
 	public MessageBuilder id(int id) {

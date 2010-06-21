@@ -1,5 +1,7 @@
 package it.lorenzoingrilli.dns4j.resolver;
 
+import it.lorenzoingrilli.dns4j.protocol.Message;
+
 /**
  * Synchronous Resolver
  * 
@@ -8,4 +10,5 @@ package it.lorenzoingrilli.dns4j.resolver;
  * @author Lorenzo Ingrilli'
  */
 public interface SyncResolver extends Resolver {
+	public Message query(Message request);
 }

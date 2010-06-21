@@ -10,6 +10,7 @@ import it.lorenzoingrilli.dns4j.protocol.Message;
  * @author Lorenzo Ingrilli'
  */
 public interface AsyncResolver extends Resolver, Runnable {
+	public void query(Message request);
     public void query(Message request, AsyncEventListener listener);
     public void setEventListener(AsyncEventListener listener);
     public void setUnexpectedResponseListener(AsyncUnexpectedResponseListener listener);
