@@ -6,6 +6,8 @@ import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.Bindings;
@@ -22,6 +24,7 @@ public class ScriptedResolver implements SyncResolver {
     private String filename;
 	private ScriptEngineManager manager;
     private ScriptEngine engine;
+    private Map<String, Object> context = new ConcurrentHashMap<String, Object>();
 
     public ScriptedResolver() {
     }
@@ -36,6 +39,7 @@ public class ScriptedResolver implements SyncResolver {
 
         Bindings binds = engine.createBindings();
         binds.put("request", request);
+        binds.put("context", context);
 
         FileReader reader = null;
         try {
