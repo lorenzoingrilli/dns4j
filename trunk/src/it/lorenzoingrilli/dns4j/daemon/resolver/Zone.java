@@ -1,4 +1,4 @@
-package it.lorenzoingrilli.dns4j.resolver.impl;
+package it.lorenzoingrilli.dns4j.daemon.resolver;
 
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -1,4 +1,4 @@
-package it.lorenzoingrilli.dns4j.resolver.impl;
+package it.lorenzoingrilli.dns4j.daemon.resolver;
 
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 

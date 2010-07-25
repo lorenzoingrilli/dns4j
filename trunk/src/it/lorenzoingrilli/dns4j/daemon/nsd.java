@@ -1,19 +1,21 @@
 package it.lorenzoingrilli.dns4j.daemon;
 
 import it.lorenzoingrilli.dns4j.cli.CLI;
-import it.lorenzoingrilli.dns4j.daemon.plugins.JMXPlugin;
+//import it.lorenzoingrilli.dns4j.daemon.plugins.JMXPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.LogPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.TCPServerPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.UDPServerPlugin;
+import it.lorenzoingrilli.dns4j.daemon.resolver.ScriptedResolver;
+import it.lorenzoingrilli.dns4j.daemon.resolver.YamlResolver;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
-import it.lorenzoingrilli.dns4j.resolver.impl.ScriptedResolver;
-import it.lorenzoingrilli.dns4j.resolver.impl.YamlResolver;
+//import it.lorenzoingrilli.dns4j.resolver.impl.DBAuthResolver;
 
 import java.io.File;
 import java.io.FileReader;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+//import org.apache.commons.dbcp.BasicDataSource;
 
 import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -45,27 +47,29 @@ public class nsd extends CLI {
 	@Override
 	public void run() throws Exception {
 		String conf = getCmdLine().getOptionValue('c', DEFAULT_CONF);
-	   	 YamlReader reader = new YamlReader(new FileReader(conf));
-		 YamlConfig config = reader.getConfig();
-		 config.setClassTag("executor", TPExecutor.class);
-		 config.setClassTag("serializer", SerializerImpl.class);
-		 config.setClassTag("yamlresolver", YamlResolver.class);
-		 config.setClassTag("scriptedresolver", ScriptedResolver.class);
-		 config.setClassTag("log", LogPlugin.class);		 
-		 config.setClassTag("tcp", TCPServerPlugin.class);
-		 config.setClassTag("udp", UDPServerPlugin.class);
-		 config.setClassTag("jmx", JMXPlugin.class);
-			
-		 pm.init();
-		 Object param = null;
-		 while( (param = reader.read()) != null) {			 
-			 if(param instanceof Plugin) {
-				 pm.load((Plugin) param);
-			 }
-			 else {
-				 System.out.println("Load component "+param);
-			 }
-	 	 }
+		YamlReader reader = new YamlReader(new FileReader(conf));
+		YamlConfig config = reader.getConfig();
+		config.setClassTag("executor", TPExecutor.class);
+		config.setClassTag("serializer", SerializerImpl.class);
+		config.setClassTag("yamlresolver", YamlResolver.class);		 
+		config.setClassTag("scriptedresolver", ScriptedResolver.class);
+//		config.setClassTag("dbresolver", DBAuthResolver.class);
+//		config.setClassTag("datasource", BasicDataSource.class);
+		config.setClassTag("log", LogPlugin.class);		 
+		config.setClassTag("tcp", TCPServerPlugin.class);
+		config.setClassTag("udp", UDPServerPlugin.class);
+//		config.setClassTag("jmx", JMXPlugin.class);
+
+		pm.init();
+		Object param = null;
+		while( (param = reader.read()) != null) {			 
+			if(param instanceof Plugin) {
+				pm.load((Plugin) param);
+			}
+			else {
+				System.out.println("Load component "+param);
+			}
+		}
 	}
 	
 	@Override
@@ -74,3 +78,4 @@ public class nsd extends CLI {
 	}
     
 }
+
