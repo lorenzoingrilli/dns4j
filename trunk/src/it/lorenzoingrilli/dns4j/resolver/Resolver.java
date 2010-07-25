@@ -5,5 +5,5 @@ package it.lorenzoingrilli.dns4j.resolver;
  * 
  * @author Lorenzo Ingrilli'
  */
-public interface Resolver {    
+public interface Resolver {
 }
