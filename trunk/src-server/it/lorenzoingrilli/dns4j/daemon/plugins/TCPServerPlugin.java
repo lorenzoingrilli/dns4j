@@ -59,7 +59,7 @@ public class TCPServerPlugin implements Runnable, Plugin {
 				@Override
 				public void run() {
 					try {
-					// WARN: we shuold manage multiple request on the same tcp connection
+					// WARN: we should manage multiple request on the same tcp connection
 					Message request = serializer.deserialize(socket.getInputStream());
 					dispatcher.dispatch(new EventRecv(this, request));
 					Message response = resolver.query(request);
