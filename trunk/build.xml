@@ -1,7 +1,6 @@
 <project
 	name="dns4j" 
 	default="build"
-	xmlns:ivy="antlib:org.apache.ivy.ant"
 	>
 
 <description>
