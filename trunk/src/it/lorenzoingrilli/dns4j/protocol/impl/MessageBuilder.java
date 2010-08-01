@@ -1,8 +1,10 @@
 package it.lorenzoingrilli.dns4j.protocol.impl;
 
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Header;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Question;
+import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 
 import java.util.Collection;
@@ -80,6 +82,16 @@ public class MessageBuilder {
 	/** Add a question in the questions part */
 	public MessageBuilder addQuestion(String qname, int qtype, int qclass) {		
 		return this.addQuestion(new QuestionImpl(qname, qtype, qclass));
+	}
+	
+	/** Add a question in the questions part (class INET) */
+	public MessageBuilder addQuestion(String qname, int qtype) {		
+		return this.addQuestion(new QuestionImpl(qname, qtype, Clazz.IN));
+	}
+	
+	/** Add a question in the questions part (class INET, type A) */
+	public MessageBuilder addQuestion(String qname) {		
+		return this.addQuestion(new QuestionImpl(qname, Type.A, Clazz.IN));
 	}
 	
 	/** Add a resource record in answer part*/
