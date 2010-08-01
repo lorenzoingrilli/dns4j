@@ -1,8 +1,9 @@
 package it.lorenzoingrilli.dns4j.daemon;
 
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +12,7 @@ public class PluginManagerImpl implements PluginManager, EventDispatcher{
 
 	private Logger logger = Logger.getLogger(PluginManagerImpl.class.getName());
 	
-	private HashMap<Plugin, Thread> threads = new HashMap<Plugin, Thread>();
+	private Map<Plugin, Thread> threads = new ConcurrentHashMap<Plugin, Thread>();
 	private LinkedList<Plugin> plugins= new LinkedList<Plugin>();
 	private LinkedList<PluginEventReceiver> eplugins= new LinkedList<PluginEventReceiver>();
 	private ArrayBlockingQueue<Event> events = new ArrayBlockingQueue<Event>(1000, true);

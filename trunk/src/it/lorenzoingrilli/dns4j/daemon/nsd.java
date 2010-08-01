@@ -5,13 +5,20 @@ import it.lorenzoingrilli.dns4j.cli.CLI;
 import it.lorenzoingrilli.dns4j.daemon.plugins.LogPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.TCPServerPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.UDPServerPlugin;
+//import it.lorenzoingrilli.dns4j.daemon.resolver.RecursiveAsyncResolver;
 import it.lorenzoingrilli.dns4j.daemon.resolver.ScriptedResolver;
 import it.lorenzoingrilli.dns4j.daemon.resolver.YamlResolver;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
-//import it.lorenzoingrilli.dns4j.resolver.impl.DBAuthResolver;
+//import it.lorenzoingrilli.dns4j.daemon.resolver.DBAuthResolver;
+import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
+import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
+import it.lorenzoingrilli.dns4j.daemon.util.InetAddressSerializer;
 
 import java.io.File;
 import java.io.FileReader;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -53,12 +60,16 @@ public class nsd extends CLI {
 		config.setClassTag("serializer", SerializerImpl.class);
 		config.setClassTag("yamlresolver", YamlResolver.class);		 
 		config.setClassTag("scriptedresolver", ScriptedResolver.class);
+//		config.setClassTag("recursiveresolver", RecursiveAsyncResolver.class);
 //		config.setClassTag("dbresolver", DBAuthResolver.class);
 //		config.setClassTag("datasource", BasicDataSource.class);
 		config.setClassTag("log", LogPlugin.class);		 
 		config.setClassTag("tcp", TCPServerPlugin.class);
 		config.setClassTag("udp", UDPServerPlugin.class);
 //		config.setClassTag("jmx", JMXPlugin.class);
+		config.setScalarSerializer(InetAddress.class, new InetAddressSerializer());
+		config.setScalarSerializer(Inet4Address.class, new Inet4AddressSerializer());
+		config.setScalarSerializer(Inet6Address.class, new Inet6AddressSerializer());
 
 		pm.init();
 		Object param = null;
