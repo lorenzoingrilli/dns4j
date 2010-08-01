@@ -10,4 +10,5 @@ public interface AsyncEventListener {
     public void onRequest(Message request);
     public void onResponse(Message request, Message response);
     public void onTimeout(Message request);
+    public void onUnexpectedResponse(Message response);
 }
