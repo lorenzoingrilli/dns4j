@@ -59,8 +59,8 @@ public class SerializerImpl implements Serializer {
     public int serialize(Message m, byte[] buffer) {
     	ByteBuffer bb = ByteBuffer.wrap(buffer);
     	Header h = m.getHeader();
-    	try {        
-        int f1 = 0;
+        
+    	int f1 = 0;
         if(h.isQuery()) f1 |= 0x80;
         f1 |= (h.getOpcode() & 0x0F) << 6;
         if(h.isAuthoritative()) f1 |= 0x04;
@@ -69,6 +69,8 @@ public class SerializerImpl implements Serializer {
         int f2 = 0;
         if(h.isRecursionAvailable()) f2 |= 0x80;
         f2 |= (h.getOpcode() & 0x0F);
+        
+    	try {        
         putUShort(bb, h.getId());
         putUByte(bb, f1);
         putUByte(bb, f2);
@@ -101,12 +103,7 @@ public class SerializerImpl implements Serializer {
     		// Set truncation flag
     		int len = bb.position();
     		bb.position(2);
-            int f1 = 0;
-            if(h.isQuery()) f1 |= 0x80;
-            f1 |= (h.getOpcode() & 0x0F) << 6;
-            if(h.isAuthoritative()) f1 |= 0x04;
             f1 |= 0x02;
-            if(h.isRecursionDesidered()) f1 |= 0x01;
             putUByte(bb, f1);
     		return len;
     	}
