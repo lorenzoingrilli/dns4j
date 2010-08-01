@@ -1,8 +1,8 @@
 package it.lorenzoingrilli.dns4j.daemon.resolver;
 
 import it.lorenzoingrilli.dns4j.protocol.Message;
-import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
+import java.beans.ConstructorProperties;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import javax.script.ScriptEngineManager;
 /**
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
  */
-public class ScriptedResolver implements SyncResolver {
+public class ScriptedResolver implements ServerSyncResolver<ServerQueryContext> {
     
 	private static Logger logger = Logger.getLogger(ScriptedResolver.class.getName());
 	
@@ -26,11 +26,18 @@ public class ScriptedResolver implements SyncResolver {
     private ScriptEngine engine;
     private Map<String, Object> context = new ConcurrentHashMap<String, Object>();
 
-    public ScriptedResolver() {
+    @ConstructorProperties(value={"file"})
+    public ScriptedResolver(String file) {
+    	setFile(file);
+    }
+	
+    @Override
+    public Message query(Message request) {
+    	return query(request, null);
     }
     
     @Override
-    public Message query(Message request) {
+    public Message query(Message request, ServerQueryContext queryContext) {
     	File file = new File(filename);
     	
     	if(file.isDirectory() || !file.canRead()) {
@@ -40,6 +47,10 @@ public class ScriptedResolver implements SyncResolver {
         Bindings binds = engine.createBindings();
         binds.put("request", request);
         binds.put("context", context);
+        if(queryContext!=null) {
+	        binds.put("srcAddress", queryContext.getAddress());
+	        binds.put("srcPort", queryContext.getPort());
+        }
 
         FileReader reader = null;
         try {

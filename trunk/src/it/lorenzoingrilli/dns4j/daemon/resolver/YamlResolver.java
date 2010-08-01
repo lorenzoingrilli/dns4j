@@ -1,5 +1,7 @@
 package it.lorenzoingrilli.dns4j.daemon.resolver;
 
+import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
+import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.AAAAImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.AImpl;
@@ -18,16 +20,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import com.esotericsoftware.yamlbeans.YamlConfig;
-import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
-import com.esotericsoftware.yamlbeans.scalar.ScalarSerializer;
 
 /**
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
@@ -167,37 +166,5 @@ class ZoneEntryKey {
 		return qtype;
 	}	
 	
-}
-
-class Inet4AddressSerializer implements ScalarSerializer<Inet4Address> {
-	@Override
-	public Inet4Address read(String ip) throws YamlException {
-		try {
-			return (Inet4Address) Inet4Address.getByName(ip);
-		} catch (UnknownHostException e) {
-			throw new YamlException(e);
-		}
-	}
-
-	@Override
-	public String write(Inet4Address ip) throws YamlException {
-		return ip.getHostAddress();
-	}
-}
-
-class Inet6AddressSerializer implements ScalarSerializer<Inet6Address> {
-	@Override
-	public Inet6Address read(String ip) throws YamlException {
-		try {
-			return (Inet6Address) Inet6Address.getByName(ip);
-		} catch (UnknownHostException e) {
-			throw new YamlException(e);
-		}
-	}
-
-	@Override
-	public String write(Inet6Address ip) throws YamlException {
-		return ip.getHostAddress();
-	}
 }
 

@@ -6,17 +6,21 @@ import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.RetCodes;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.impl.MessageImpl;
-import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
-
 /**
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
  */
-abstract public class AuthoritativeResolver implements SyncResolver {
+abstract public class AuthoritativeResolver implements ServerSyncResolver<ServerQueryContext> {
 		
 	private boolean questionEcho = false;
 
 	@Override
-	public Message query(Message request) {
+	public Message query(Message request, ServerQueryContext queryContext) {
+		return query(request);
+	}
+	
+	@Override
+	public Message query(Message request)
+	{
 		Message response = new MessageImpl();
 		response.getHeader().setId(request.getHeader().getId());
 		response.getHeader().setRecursionDesidered(request.getHeader().isRecursionDesidered());
