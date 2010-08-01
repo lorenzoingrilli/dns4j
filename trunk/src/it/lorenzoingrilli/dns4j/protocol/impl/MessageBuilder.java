@@ -21,12 +21,11 @@ public class MessageBuilder {
 	private static final int MAX_ID = 65535;
 	
 	/** Random number generation (used to generate random id)*/
-	private Random random = null;
+	private Random random = new Random();
 	
 	private Message message = null;
 	
 	public MessageBuilder() {		
-		random = new Random(System.currentTimeMillis());
 		create();
 	}
 	
