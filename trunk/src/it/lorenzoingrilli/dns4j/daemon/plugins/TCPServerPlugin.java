@@ -4,10 +4,11 @@ import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
 import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.daemon.resolver.ServerQueryContext;
+import it.lorenzoingrilli.dns4j.daemon.resolver.ServerSyncResolver;
 import it.lorenzoingrilli.dns4j.net.TCP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
-import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
 import java.beans.ConstructorProperties;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import java.util.concurrent.Executor;
 public class TCPServerPlugin implements Runnable, Plugin {
 
 	private ServerSocket ssocket = null;
-	private SyncResolver resolver;
+	private ServerSyncResolver<ServerQueryContext> resolver;
 	private Executor executor;
 	private Serializer serializer;
 
@@ -27,7 +28,7 @@ public class TCPServerPlugin implements Runnable, Plugin {
 	private EventDispatcher dispatcher;
 	
 	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
-	public TCPServerPlugin(int port, SyncResolver resolver, Executor executor, Serializer serializer) {
+	public TCPServerPlugin(int port, ServerSyncResolver<ServerQueryContext> resolver, Executor executor, Serializer serializer) {
 		this.resolver = resolver;
 		this.executor = executor;
 		this.serializer = serializer;
@@ -62,7 +63,7 @@ public class TCPServerPlugin implements Runnable, Plugin {
 					// WARN: we should manage multiple request on the same tcp connection
 					Message request = serializer.deserialize(socket.getInputStream());
 					dispatcher.dispatch(new EventRecv(this, request));
-					Message response = resolver.query(request);
+					Message response = resolver.query(request, new ServerQueryContext(socket.getInetAddress(), socket.getPort()));
 					if(response==null) return;
 					serializer.serialize(response, socket.getOutputStream());
 					dispatcher.dispatch(new EventSent(this, response));
@@ -88,11 +89,11 @@ public class TCPServerPlugin implements Runnable, Plugin {
 		}		
 	}
 	
-	public SyncResolver getResolver() {
+	public ServerSyncResolver<ServerQueryContext> getResolver() {
 		return resolver;
 	}
 
-	public void setResolver(SyncResolver resolver) {
+	public void setResolver(ServerSyncResolver<ServerQueryContext> resolver) {
 		this.resolver = resolver;
 	}
 
