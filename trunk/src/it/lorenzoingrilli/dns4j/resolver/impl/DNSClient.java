@@ -11,7 +11,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class DNSClient implements SyncResolver {
 
 	public DNSClient() {
     }
-
+    
     @Override
     public synchronized Message query(Message request) {
 		try {
@@ -80,7 +79,7 @@ public class DNSClient implements SyncResolver {
 	                resp = null;
 	        }
 	        catch(SocketTimeoutException e) {
-	        	e.printStackTrace();
+	        	//e.printStackTrace();
 	        }
         UDP.close(socket);
         return resp;
@@ -94,7 +93,7 @@ public class DNSClient implements SyncResolver {
         return timeout;
     }
 
-    public void setTimeout(int timeout) throws SocketException {
+    public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 

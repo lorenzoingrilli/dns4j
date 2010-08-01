@@ -5,7 +5,6 @@ import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
 import it.lorenzoingrilli.dns4j.resolver.AsyncEventListener;
 import it.lorenzoingrilli.dns4j.resolver.AsyncResolver;
-import it.lorenzoingrilli.dns4j.resolver.AsyncUnexpectedResponseListener;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -31,7 +30,6 @@ public class AsyncDNSClient implements AsyncResolver {
     private DatagramSocket socket;
     
     private AsyncEventListener eventListener;
-    private AsyncUnexpectedResponseListener unexpectedListener;
 
     private ConcurrentHashMap<Integer, DelayedRequest> requests = new ConcurrentHashMap<Integer, DelayedRequest>();
     private DelayQueue<DelayedRequest> queue = new DelayQueue<DelayedRequest>();
@@ -42,14 +40,14 @@ public class AsyncDNSClient implements AsyncResolver {
         socket = new DatagramSocket();
         socket.setSoTimeout(250);
     }
-
+    
     @Override
-    public void query(Message request) {
-    	query(request, null);
+    public void asyncQuery(Message request) {
+    	asyncQuery(request, null);
     }
     
     @Override
-    public void query(Message request, AsyncEventListener listener) {
+    public void asyncQuery(Message request, AsyncEventListener listener) {
         DelayedRequest dr= new DelayedRequest(request, listener);
         requests.put(request.getHeader().getId(), dr);
         queue.add(dr);
@@ -98,8 +96,8 @@ public class AsyncDNSClient implements AsyncResolver {
                 if(eventListener!=null)
                     eventListener.onResponse(req.getMessage(), resp);
             }
-            else if(req==null && unexpectedListener!=null) {
-                unexpectedListener.onUnexpectedResponse(resp);
+            else if(req==null && eventListener!=null) {
+            	eventListener.onUnexpectedResponse(resp);
             }            
         }
         catch(SocketTimeoutException e) {
@@ -113,11 +111,6 @@ public class AsyncDNSClient implements AsyncResolver {
     @Override
     public void setEventListener(AsyncEventListener eventListener) {
         this.eventListener = eventListener;
-    }
-
-    @Override
-    public void setUnexpectedResponseListener(AsyncUnexpectedResponseListener listener) {
-        this.unexpectedListener = listener;
     }
 
 }
