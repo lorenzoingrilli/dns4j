@@ -1,6 +1,7 @@
 <project
 	name="dns4j" 
 	default="build"
+	xmlns:ivy="antlib:org.apache.ivy.ant"
 	>
 
 <description>
@@ -8,7 +9,7 @@
 </description>
 
 <property name="vmversion" value="1.6"/>
-
+	
 <property name="srcdir" location="src"/>
 <property name="testdir" location="test"/>
 <property name="libdir" location="lib"/>
@@ -19,23 +20,54 @@
 <property name="distdir" location="${workdir}/dist"/>
 <property name="docsdir" location="${workdir}/javadocs"/>
 	
-<target name="build">	
+<property name="mainclass" value="it.lorenzoingrilli.dns4j.cli.nsc"/>
+	
+<!-- 
+	Build project and create distributions JARs
+-->
+<target name="build" depends="dep">	
+	
 	<mkdir dir="${distdir}"/>
 	
 	<mkdir dir="${buildsrcdir}"/>
-	<javac debug="true" srcdir="${srcdir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
+	<javac debug="false" srcdir="${srcdir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
 	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j.jar"/>
 	
 	<mkdir dir="${buildsrcgdir}"/>
-	<javac debug="false" srcdir="${srcdir}" destdir="${buildsrcgdir}" extdirs="${libdir}" target="${vmversion}"/>
+	<javac debug="true" srcdir="${srcdir}" destdir="${buildsrcgdir}" extdirs="${libdir}" target="${vmversion}"/>
 	<copy todir="${buildsrcgdir}">
 		<fileset dir="${srcdir}"/>
 	</copy>
 	<jar basedir="${buildsrcgdir}" destfile="${distdir}/dns4j-g.jar"/>	
 </target>
 	
-<target name="rebuild" depends="clean,build"/>
-		
+<!-- 
+	Build project and create distributions JARs.
+	Generated JARs includes all needed third-parts libraries
+-->
+<target name="buildall" depends="build">
+	<unjar src="${libdir}/yamlbeans-1.04.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-cli-1.2.jar" dest="${buildsrcdir}"/>	
+	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcdir}"/>
+	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-all.jar">
+		<manifest>			
+			<attribute name="Main-Class" value="${mainclass}"/>
+		</manifest>
+	</jar>
+	
+	<unjar src="${libdir}/yamlbeans-1.04.jar" dest="${buildsrcgdir}"/>
+	<unjar src="${libdir}/commons-cli-1.2.jar" dest="${buildsrcgdir}"/>
+	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcgdir}"/>
+	<jar basedir="${buildsrcgdir}" destfile="${distdir}/dns4j-g-all.jar">
+		<manifest>			
+			<attribute name="Main-Class" value="${mainclass}"/>
+		</manifest>
+	</jar>
+</target>
+			
+<!-- 
+	Generate Javadocs API documentation
+-->
 <target name="docs">
 	<mkdir dir="${docsdir}"/>
 	<javadoc destdir="${docsdir}" author="true" version="true" use="true" windowtitle="dns4j" extdirs="${libdir}">
@@ -44,22 +76,29 @@
 	</javadoc>
 </target>
 	
+<!-- 
+	Clean work directory
+-->	
 <target name="clean">
 	<delete dir="${workdir}"/>
 </target>
 	
- <target name="dep" depends="clean" description="retrieve dependencies" >
+<!-- 
+	Retrieve all needed dependencies
+-->
+ <target name="dep" description="retrieve dependencies" >
+
  	<mkdir dir="${libdir}"/>
- 	<mkdir dir="${workdir}"/>
+ 	<ivy:retrieve/>
  	
- 	<get src="http://yamlbeans.googlecode.com/files/yamlbeans-1.04.jar" dest="${libdir}"/>
+ 	<available property="yaml-present" file="${libdir}/yamlbeans-1.04.jar"/>
+ 	
+ 	<antcall target="dep-yamlbeans"/>
 	
- 	<get src="http://apache.fastbull.org/commons/cli/binaries/commons-cli-1.2-bin.tar.gz" dest="${workdir}"/>
- 	<gunzip src="${workdir}/commons-cli-1.2-bin.tar.gz" dest="${workdir}/commons-cli-1.2-bin.tar"/>
- 	<untar src="${workdir}/commons-cli-1.2-bin.tar" dest="${workdir}"/>
- 	<copy todir="${libdir}">
-		<fileset file="${workdir}/commons-cli-1.2/commons-cli-1.2.jar"/>
- 	</copy>
  </target>
+
+<target name="dep-yamlbeans" unless="yaml-present">
+	<get src="http://yamlbeans.googlecode.com/files/yamlbeans-1.04.jar" dest="${libdir}"/>
+</target>
 	
 </project>
