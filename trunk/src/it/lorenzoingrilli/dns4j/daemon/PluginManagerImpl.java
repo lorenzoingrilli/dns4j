@@ -27,7 +27,7 @@ public class PluginManagerImpl implements PluginManager, EventDispatcher{
 					try {
 						event = events.poll(200, TimeUnit.MILLISECONDS);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						return;
 					}
 					if(event!=null) {
 						for(PluginEventReceiver plugin: eplugins)

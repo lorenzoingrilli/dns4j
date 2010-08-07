@@ -26,7 +26,7 @@ public class LogPlugin implements PluginEventReceiver {
 		if(event instanceof EventRecv)
 			logger.log(Level.INFO, "RECV "+((EventRecv)event).getMessage()+" ("+event.getEmitter()+")");
 		else if(event instanceof EventSent)
-			logger.log(Level.INFO, "RECV "+((EventSent)event).getMessage()+" ("+event.getEmitter()+")");
+			logger.log(Level.INFO, "SENT "+((EventSent)event).getMessage()+" ("+event.getEmitter()+")");
 	}
 
 }

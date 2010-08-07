@@ -12,6 +12,6 @@ import it.lorenzoingrilli.dns4j.protocol.Message;
  */
 public interface AsyncResolver extends Resolver, Runnable {
 	public void asyncQuery(Message request);
-    public void asyncQuery(Message request, AsyncEventListener listener);
-    public void setEventListener(AsyncEventListener listener);
+    public void asyncQuery(Message request, DnsEventListener listener);
+    public void setEventListener(DnsEventListener listener);
 }

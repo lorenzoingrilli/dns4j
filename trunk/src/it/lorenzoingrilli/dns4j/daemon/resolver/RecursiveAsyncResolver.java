@@ -6,7 +6,7 @@ import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
-import it.lorenzoingrilli.dns4j.resolver.AsyncEventListener;
+import it.lorenzoingrilli.dns4j.resolver.DnsEventListener;
 import it.lorenzoingrilli.dns4j.resolver.AsyncResolver;
 
 import java.beans.ConstructorProperties;
@@ -36,7 +36,7 @@ implements AsyncResolver, Plugin {
     private int port;
     private int timeout = 3000;
 
-    private AsyncEventListener eventListener = LOG_EVENT_LISTENER;
+    private DnsEventListener eventListener = LOG_EVENT_LISTENER;
     
 	private Serializer serializer = new SerializerImpl();
     private DatagramSocket socket;
@@ -55,7 +55,7 @@ implements AsyncResolver, Plugin {
 	}
 	
 	@Override
-	public void asyncQuery(Message request, AsyncEventListener listener) {
+	public void asyncQuery(Message request, DnsEventListener listener) {
         DelayedRequest dr= new DelayedRequest(request, listener);
         requests.put(request.getHeader().getId(), dr);
         queue.add(dr);
@@ -115,7 +115,7 @@ implements AsyncResolver, Plugin {
     }
 
     @Override
-    public void setEventListener(AsyncEventListener eventListener) {
+    public void setEventListener(DnsEventListener eventListener) {
         this.eventListener = eventListener;
     }
 
@@ -159,10 +159,10 @@ class DelayedRequest implements Delayed {
 	
 	private long id;
     private Message message = null;
-    private AsyncEventListener listener;
+    private DnsEventListener listener;
     private long ts;
     
-    public DelayedRequest(Message message, AsyncEventListener listener) {
+    public DelayedRequest(Message message, DnsEventListener listener) {
     	this.id=idCounter++;
         this.ts = System.currentTimeMillis();
         this.message = message;
@@ -173,7 +173,7 @@ class DelayedRequest implements Delayed {
         return message;
     }
 
-    public AsyncEventListener getEventListener() {
+    public DnsEventListener getEventListener() {
         return listener;
     }
     
@@ -214,7 +214,7 @@ class DelayedRequest implements Delayed {
 	}
 }
 
-class LogEventListener implements AsyncEventListener {
+class LogEventListener implements DnsEventListener {
 	private static Logger logger = Logger.getLogger(LogEventListener.class.getName());
 
 	@Override

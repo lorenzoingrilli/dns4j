@@ -4,9 +4,12 @@ import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
+import it.lorenzoingrilli.dns4j.resolver.DnsEventListener;
+import it.lorenzoingrilli.dns4j.resolver.NetEventListener;
 import it.lorenzoingrilli.dns4j.resolver.SyncResolver;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -31,6 +34,9 @@ public class DNSClient implements SyncResolver {
     private boolean udpEnabled = true;
     private boolean tcpEnabled = true;
     private List<InetSocketAddress> servers = new LinkedList<InetSocketAddress>();
+    
+    private NetEventListener netEventListener;
+    private DnsEventListener dnsEventListener;
 
 	public DNSClient() {
     }
@@ -69,8 +75,14 @@ public class DNSClient implements SyncResolver {
         while(!success && triesCount<numTries) 
 	        try {
 	        	triesCount++;
-	        	UDP.send(socket, socketAddress, buffer, len);
-	            /*DatagramPacket udpResp =*/ UDP.receive(socket, buffer);
+	        	DatagramPacket udpReq = UDP.send(socket, socketAddress, buffer, len);
+	            if(netEventListener!=null) {
+	            	netEventListener.onSent(udpReq.getData(), udpReq.getOffset(), udpReq.getLength());
+	            }
+	            DatagramPacket udpResp = UDP.receive(socket, buffer);
+	            if(netEventListener!=null) {
+	            	netEventListener.onRecv(udpResp.getData(), udpResp.getOffset(), udpResp.getLength());
+	            }
 	            //TODO check: src host/port should be equals to request host/port
 	            resp = serializer.deserialize(buffer);            
 	            if(resp.getHeader().getId()==request.getHeader().getId())
@@ -135,6 +147,22 @@ public class DNSClient implements SyncResolver {
 
 	public void setServers(List<InetSocketAddress> servers) {
 		this.servers = servers;
+	}
+
+	public NetEventListener getNetEventListener() {
+		return netEventListener;
+	}
+
+	public void setNetEventListener(NetEventListener netEventListener) {
+		this.netEventListener = netEventListener;
+	}
+
+	public DnsEventListener getDnsEventListener() {
+		return dnsEventListener;
+	}
+
+	public void setDnsEventListener(DnsEventListener dnsEventListener) {
+		this.dnsEventListener = dnsEventListener;
 	}
 
 }

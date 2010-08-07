@@ -3,7 +3,7 @@ package it.lorenzoingrilli.dns4j.resolver.impl;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
-import it.lorenzoingrilli.dns4j.resolver.AsyncEventListener;
+import it.lorenzoingrilli.dns4j.resolver.DnsEventListener;
 import it.lorenzoingrilli.dns4j.resolver.AsyncResolver;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class AsyncDNSClient implements AsyncResolver {
 
     private DatagramSocket socket;
     
-    private AsyncEventListener eventListener;
+    private DnsEventListener eventListener;
 
     private ConcurrentHashMap<Integer, DelayedRequest> requests = new ConcurrentHashMap<Integer, DelayedRequest>();
     private DelayQueue<DelayedRequest> queue = new DelayQueue<DelayedRequest>();
@@ -47,7 +47,7 @@ public class AsyncDNSClient implements AsyncResolver {
     }
     
     @Override
-    public void asyncQuery(Message request, AsyncEventListener listener) {
+    public void asyncQuery(Message request, DnsEventListener listener) {
         DelayedRequest dr= new DelayedRequest(request, listener);
         requests.put(request.getHeader().getId(), dr);
         queue.add(dr);
@@ -109,7 +109,7 @@ public class AsyncDNSClient implements AsyncResolver {
     }
 
     @Override
-    public void setEventListener(AsyncEventListener eventListener) {
+    public void setEventListener(DnsEventListener eventListener) {
         this.eventListener = eventListener;
     }
 
@@ -118,10 +118,10 @@ public class AsyncDNSClient implements AsyncResolver {
 class DelayedRequest implements Delayed {
 
     private Message message = null;
-    private AsyncEventListener listener;
+    private DnsEventListener listener;
     private long ts;
     
-    public DelayedRequest(Message message, AsyncEventListener listener) {
+    public DelayedRequest(Message message, DnsEventListener listener) {
         this.ts = System.currentTimeMillis();
         this.message = message;
         this.listener = listener;
@@ -131,7 +131,7 @@ class DelayedRequest implements Delayed {
         return message;
     }
 
-    public AsyncEventListener getEventListener() {
+    public DnsEventListener getEventListener() {
         return listener;
     }
     

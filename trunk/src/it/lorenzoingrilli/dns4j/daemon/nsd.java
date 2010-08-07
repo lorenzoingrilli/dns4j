@@ -10,6 +10,7 @@ import it.lorenzoingrilli.dns4j.daemon.resolver.ScriptedResolver;
 import it.lorenzoingrilli.dns4j.daemon.resolver.YamlResolver;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
 //import it.lorenzoingrilli.dns4j.daemon.resolver.DBAuthResolver;
+import it.lorenzoingrilli.dns4j.daemon.util.FileSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.InetAddressSerializer;
@@ -70,6 +71,7 @@ public class nsd extends CLI {
 		config.setScalarSerializer(InetAddress.class, new InetAddressSerializer());
 		config.setScalarSerializer(Inet4Address.class, new Inet4AddressSerializer());
 		config.setScalarSerializer(Inet6Address.class, new Inet6AddressSerializer());
+		config.setScalarSerializer(File.class, new FileSerializer());
 
 		pm.init();
 		Object param = null;

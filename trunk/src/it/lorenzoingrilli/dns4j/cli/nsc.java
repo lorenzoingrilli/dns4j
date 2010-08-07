@@ -1,15 +1,22 @@
 package it.lorenzoingrilli.dns4j.cli;
 
+import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
+import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
+import it.lorenzoingrilli.dns4j.daemon.util.InetAddressSerializer;
 import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.impl.MessageBuilder;
+import it.lorenzoingrilli.dns4j.resolver.NetEventListener;
 import it.lorenzoingrilli.dns4j.resolver.impl.DNSClient;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
@@ -22,6 +29,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+
+import com.esotericsoftware.yamlbeans.YamlConfig;
+import com.esotericsoftware.yamlbeans.YamlException;
+import com.esotericsoftware.yamlbeans.YamlWriter;
 
 /**
  * DNS command line client
@@ -34,7 +47,6 @@ public class nsc {
 	private static final int DEFAULT_PORT = 53;
 	private static final String DEFAULT_TIMEOUT = "5000";
 	private static final String DEFAULT_ATTEMPTS = "3";
-	private static final String DEFAULT_OUTPUT = "human";
 	private static final String RESOLV_CONF = File.separator+"etc"+File.separator+"resolv.conf";
 	private static final String SEPARATOR = " ";
 	private static final String COMMENT = " ";
@@ -51,8 +63,11 @@ public class nsc {
     	options.addOption(new Option("c", "class", true, "query class (default INET)"));
     	options.addOption(new Option("a", "attempts", true, "Number of times to try UDP queries to server (default 3)"));
     	options.addOption(new Option("T", "timeout", true, "timeout (in milliseconds) for a query (default 5 second)"));
-    	options.addOption(new Option("o", "output", true, "tipo di output: human,yaml,b64,hex"));
-    	options.addOption(new Option("H", "no-udp", false, "disable UDP requests"));
+    	options.addOption(new Option("y", "yaml", false, "output in yaml format"));
+    	options.addOption(new Option("h", "human", false, "output in human format"));
+    	options.addOption(new Option("b", "base64", false, "output in human format"));
+    	options.addOption(new Option("H", "hex", false, "output in human format"));
+    	options.addOption(new Option("X", "no-udp", false, "disable UDP requests"));
     	options.addOption(new Option("F", "no-tcp", false, "disable TCP requests"));
     }
     
@@ -76,9 +91,12 @@ public class nsc {
     		String serverString = cmdline.getOptionValue('s');
     		String servers[] = serverString.split(",");
     		for(String s: servers) {
-    			String fields[] = s.split("\\-"); 
+    			String fields[] = s.split("\\@"); 
     			InetAddress addr = InetAddress.getByName(fields[0]);
-    			int port = Integer.parseInt(fields[1]);
+    			int port = DEFAULT_PORT;
+    			if(fields.length>1) {
+    				port = Integer.parseInt(fields[1]);
+    			}
     			list.add(new InetSocketAddress(addr, port));
     		}
         	client.setServers(list);
@@ -97,10 +115,16 @@ public class nsc {
 
     	int timeout = Integer.parseInt(cmdline.getOptionValue('T', DEFAULT_TIMEOUT));
     	int numAttempts = Integer.parseInt(cmdline.getOptionValue('a', DEFAULT_ATTEMPTS));
-    	String output = cmdline.getOptionValue('o', DEFAULT_OUTPUT).toLowerCase();
     	
        	client.setTimeout(timeout);
        	client.setNumAttempts(numAttempts);
+       	
+        boolean human = cmdline.hasOption("human");
+        boolean base64 = cmdline.hasOption("base64");
+        boolean yaml = cmdline.hasOption("yaml");
+        boolean hex = cmdline.hasOption("hex");
+        NetEventListener nel = new OutputNetEventListener(hex, base64);
+        client.setNetEventListener(nel);
 
        	MessageBuilder mb = new MessageBuilder();
        	
@@ -112,24 +136,11 @@ public class nsc {
     		.message();
     	
         Message resp = client.query(req);
-    	
-    	if("human".equals(output)) {
-        	System.out.println("REQUEST  "+req);
-        	System.out.println("RESPONSE "+resp);    		
-    	}
-    	else if("b64".equals(output)) {
-        	System.out.println("REQUEST  "+req);
-        	System.out.println("RESPONSE "+resp);    		
-    	}
-    	else if("hex".equals(output)) {
-        	System.out.println("REQUEST  "+req);
-        	System.out.println("RESPONSE "+resp);    		
-    	}
-    	else if("yaml".equals(output)) {
-        	System.out.println("REQUEST  "+req);
-        	System.out.println("RESPONSE "+resp);    		
-    	} 
-    	    	
+    	        
+        System.out.println("REQUEST:"); 
+        output(req, human, base64, yaml, hex);
+        System.out.println("RESPONSE:");
+        output(resp, human, base64, yaml, hex);        
     }
     
     private static CommandLine parseCmdLine(Options options, String args[])
@@ -144,6 +155,22 @@ public class nsc {
             System.exit(1);
         }
         return null;
+    }
+    
+    private static void output(Message msg, boolean human, boolean hex, boolean yaml, boolean base64) throws YamlException {
+    	if(human)
+    		System.out.println(msg);
+    	if(yaml) {
+    		StringWriter sw = new StringWriter();
+    		YamlWriter writer = new YamlWriter(sw);
+    		YamlConfig config = writer.getConfig();
+    		config.setScalarSerializer(InetAddress.class, new InetAddressSerializer());
+    		config.setScalarSerializer(Inet4Address.class, new Inet4AddressSerializer());
+    		config.setScalarSerializer(Inet6Address.class, new Inet6AddressSerializer());
+    		writer.write(msg);  
+    		writer.close();
+        	System.out.println(sw);
+    	}
     }
     
     private static void configureResolvConf(DNSClient client) throws IOException {
@@ -188,4 +215,47 @@ public class nsc {
     	
     }
     
+}
+
+class OutputNetEventListener implements NetEventListener {
+	
+	private boolean hex;
+	private boolean base64;
+	
+	public OutputNetEventListener(boolean hex, boolean base64) {
+		super();
+		this.hex = hex;
+		this.base64 = base64;
+	}
+
+	private byte[] copy(byte[] buffer, int offset, int len) {
+		byte[] b = new byte[len];
+		System.arraycopy(buffer, offset, b, 0, len);
+		return b;
+	}
+	
+	@Override
+	public void onSent(byte[] buffer, int offset, int len) {
+		if(base64) {
+			String o = new String(Base64.encodeBase64(copy(buffer, offset, len)));
+			System.out.println("SENT B64: "+o);
+		}
+		if(hex) {
+			String o = Hex.encodeHexString(copy(buffer, offset, len)).toUpperCase();
+			System.out.println("SENT HEX: "+o);
+		}		
+	}
+
+	@Override
+	public void onRecv(byte[] buffer, int offset, int len) {
+		if(base64) {
+			String o = new String(Base64.encodeBase64(copy(buffer, offset, len)));
+			System.out.println("RECV B64: "+o);
+		}
+		if(hex) {
+			String o = Hex.encodeHexString(copy(buffer, offset, len)).toUpperCase();
+			System.out.println("RECV HEX: "+o);
+		}		
+	}
+	
 }

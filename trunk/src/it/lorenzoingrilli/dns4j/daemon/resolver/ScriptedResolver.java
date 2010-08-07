@@ -21,13 +21,13 @@ public class ScriptedResolver implements ServerSyncResolver<ServerQueryContext> 
     
 	private static Logger logger = Logger.getLogger(ScriptedResolver.class.getName());
 	
-    private String filename;
+    private File file;
 	private ScriptEngineManager manager;
     private ScriptEngine engine;
     private Map<String, Object> context = new ConcurrentHashMap<String, Object>();
 
     @ConstructorProperties(value={"file"})
-    public ScriptedResolver(String file) {
+    public ScriptedResolver(File file) {
     	setFile(file);
     }
 	
@@ -37,9 +37,7 @@ public class ScriptedResolver implements ServerSyncResolver<ServerQueryContext> 
     }
     
     @Override
-    public Message query(Message request, ServerQueryContext queryContext) {
-    	File file = new File(filename);
-    	
+    public Message query(Message request, ServerQueryContext queryContext) {   	
     	if(file.isDirectory() || !file.canRead()) {
     		throw new RuntimeException(file.getPath()+" must be a readable file");
     	}
@@ -73,15 +71,17 @@ public class ScriptedResolver implements ServerSyncResolver<ServerQueryContext> 
         }
     }
     
-    public String getFile() {
-		return filename;
+    public File getFile() {
+		return file;
 	}
 
-	public void setFile(String filename) {		
-        String extension = getExtension(filename);
+	public void setFile(File file) {		
+        String extension = getExtension(file.getName());
         manager = new ScriptEngineManager();
         engine = manager.getEngineByExtension(extension);
-        this.filename = filename;
+        if(engine==null)
+        	throw new RuntimeException("No script engine found for file with extension '"+extension+"'. Maybe you need additional java libraries (jar)");
+        this.file = file;
 	}
 	
     private static String getExtension(String filename) {

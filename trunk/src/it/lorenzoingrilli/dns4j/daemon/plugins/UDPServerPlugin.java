@@ -11,7 +11,7 @@ import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
-import it.lorenzoingrilli.dns4j.resolver.AsyncEventListener;
+import it.lorenzoingrilli.dns4j.resolver.DnsEventListener;
 import it.lorenzoingrilli.dns4j.resolver.AsyncResolver;
 import it.lorenzoingrilli.dns4j.resolver.Resolver;
 
@@ -130,7 +130,7 @@ public class UDPServerPlugin implements Runnable, Plugin {
 
 }
 
-class SendResponse implements AsyncEventListener {
+class SendResponse implements DnsEventListener {
 
 	private InetAddress address;
 	private int port;

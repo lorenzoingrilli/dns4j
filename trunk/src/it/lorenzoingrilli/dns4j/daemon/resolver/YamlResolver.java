@@ -1,5 +1,7 @@
 package it.lorenzoingrilli.dns4j.daemon.resolver;
 
+import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
+import it.lorenzoingrilli.dns4j.daemon.Plugin;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
@@ -24,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -31,10 +35,12 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 /**
  * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
  */
-public class YamlResolver extends AuthoritativeResolver {
+public class YamlResolver extends AuthoritativeResolver implements Plugin, Runnable {
 		
-	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"db.yml";
+	private static Logger logger = Logger.getLogger(YamlResolver.class.getName());
 	
+	public static final long DEFAULT_LIVE_REFRESH = 5000; 
+		
 	public static final int DEFAULT_TTL = 86400;
     public static final int DEFAULT_SOA_SERIAL = 1;
     public static final int DEFAULT_SOA_REFRESH = 3600;
@@ -42,17 +48,19 @@ public class YamlResolver extends AuthoritativeResolver {
     public static final int DEFAULT_SOA_EXPIRE = 86400;
     public static final int DEFAULT_SOA_MINIMUM = 3600;
 
-	private String file = DEFAULT_CONF;
+	private File file = null;
+	private long liveRefresh = DEFAULT_LIVE_REFRESH;
+	private long lastModified = 0;
 
-	private HashMap<ZoneEntryKey, List<RR>> map = new HashMap<ZoneEntryKey, List<RR>>();
+	private HashMap<ZoneEntryKey, List<RR>> map;
 	
 	@ConstructorProperties(value={"file"})
-	public YamlResolver(String file) throws IOException {
-		this.file = file;
-		parse();
+	public YamlResolver(File file) throws IOException {
+		setFile(file);
+		map = parse(file);
 	}
 	
-	public void parse() throws IOException {		
+	private static HashMap<ZoneEntryKey, List<RR>> parse(File file) throws IOException {		
 		YamlReader reader = new YamlReader(new FileReader(file));
 		YamlConfig config = reader.getConfig();
 		config.setClassTag("zone", Zone.class);
@@ -69,6 +77,7 @@ public class YamlResolver extends AuthoritativeResolver {
 		config.setScalarSerializer(Inet4Address.class, new Inet4AddressSerializer());
 		config.setScalarSerializer(Inet6Address.class, new Inet6AddressSerializer());
 		
+		HashMap<ZoneEntryKey, List<RR>> map = new HashMap<ZoneEntryKey, List<RR>>();
 		Zone zone = null;
 		while( (zone = (Zone) reader.read()) != null) {
 				Set<Entry<ZoneEntryKey, List<RR>>> es = zone.getMap().entrySet();				
@@ -79,7 +88,8 @@ public class YamlResolver extends AuthoritativeResolver {
 							rr.setTtl(DEFAULT_TTL);
 					}
 				}
-		}	
+		}
+		return map;
 	}
 	
 	@Override
@@ -95,13 +105,52 @@ public class YamlResolver extends AuthoritativeResolver {
 			}
 		return qr;
 	}
-	
-	public String getFile() {
+
+	@Override
+	public void run() {
+		while(!Thread.currentThread().isInterrupted())
+		try {
+			if(liveRefresh<0) {
+				Thread.sleep(DEFAULT_LIVE_REFRESH);
+				continue;
+			}
+			Thread.sleep(liveRefresh);
+			long ts = file.lastModified(); 
+			if(ts>lastModified) {
+				map = parse(file);
+				lastModified = ts;
+				logger.log(Level.INFO, "Yaml Zone file reloaded");
+			}
+		} catch (InterruptedException e) {
+			return;
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "Broken yaml configuration", e);
+		}
+	}
+
+	public File getFile() {
 		return file;
 	}
 
-	public void setFile(String file) {
+	public void setFile(File file) {
 		this.file = file;
+		lastModified = file.lastModified();		
+	}
+	
+	public long getLiveRefresh() {
+		return liveRefresh;
+	}
+
+	public void setLiveRefresh(long liveRefresh) {
+		this.liveRefresh = liveRefresh;
+	}
+
+	@Override
+	public void init(EventDispatcher dispatcher) {	
+	}
+
+	@Override
+	public void destroy() {
 	}
 
 }
