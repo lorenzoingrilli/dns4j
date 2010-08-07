@@ -1,0 +1,26 @@
+<ivy-module version="2.0" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+            
+    <info organisation="it.lorenzoingrilli" module="dns4j" />
+    
+<!--    <configurations>-->
+<!--    	<conf name="default"/>-->
+<!--    	<conf name="all" extends="default" visibility="private" transitive="false"/>-->
+<!--    </configurations>-->
+    
+    <dependencies>
+    	<!-- TODO add yamlbeans -->
+    	<dependency org="commons-cli" name="commons-cli" rev="1.2"/>
+        <dependency org="commons-codec" name="commons-codec" rev="1.4"/>
+        <dependency org="junit" name="junit" rev="4.8.1"/>
+        
+        <!--  conf="all->default" -->
+        <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4"/>
+        <dependency org="mysql" name="mysql-connector-java" rev="5.1.13"/>        
+        <dependency org="org.codehaus.groovy" name="groovy-all" rev="1.7.4"/>
+<!--        <dependency org="org.jruby" name="jruby" rev="1.5.1"/>-->
+                                
+    </dependencies>
+        
+</ivy-module>
