@@ -43,6 +43,6 @@ public class Type {
     public static final int AXFR = 252;
     public static final int MAILB = 253;
     public static final int MAILA = 254;
-    public static final int STAR = 255;
+    public static final int ALL = 255;
     
 }
