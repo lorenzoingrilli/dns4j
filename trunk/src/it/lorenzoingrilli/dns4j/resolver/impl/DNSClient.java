@@ -19,20 +19,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class DNSClient implements SyncResolver {
 
-    public static final int DEFAULT_PORT = 53;
-    public static final int DEFAULT_TIMEOUT = 2500;
-    public static final int DEFAULT_NUM_ATTEMPTS = 3;
+	public static final String DEFAULT_SERVER = "localhost";
+    public static final Integer DEFAULT_PORT = 53;
+    public static final Integer DEFAULT_TIMEOUT = 2500;
+    public static final Integer DEFAULT_NUM_ATTEMPTS = 3;
+    public static final Integer DEFAULT_NDOTS = 1;
 
     private Serializer serializer = new SerializerImpl();
     
     private int timeout = DEFAULT_TIMEOUT;
     private int numAttempts = DEFAULT_NUM_ATTEMPTS;
+    private int ndots = DEFAULT_NDOTS;
     private boolean udpEnabled = true;
-    private boolean tcpEnabled = true;
+    private boolean tcpEnabled = true;    
     private List<InetSocketAddress> servers = new LinkedList<InetSocketAddress>();
     
     private NetEventListener netEventListener;
@@ -163,6 +166,14 @@ public class DNSClient implements SyncResolver {
 
 	public void setDnsEventListener(DnsEventListener dnsEventListener) {
 		this.dnsEventListener = dnsEventListener;
+	}
+
+	public int getNdots() {
+		return ndots;
+	}
+
+	public void setNdots(int ndots) {
+		this.ndots = ndots;
 	}
 
 }

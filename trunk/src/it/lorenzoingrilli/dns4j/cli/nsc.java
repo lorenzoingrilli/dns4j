@@ -43,10 +43,6 @@ import com.esotericsoftware.yamlbeans.YamlWriter;
  */
 public class nsc {
 
-	private static final String DEFAULT_SERVER = "localhost";
-	private static final int DEFAULT_PORT = 53;
-	private static final String DEFAULT_TIMEOUT = "5000";
-	private static final String DEFAULT_ATTEMPTS = "3";
 	private static final String RESOLV_CONF = File.separator+"etc"+File.separator+"resolv.conf";
 	private static final String SEPARATOR = " ";
 	private static final String COMMENT = " ";
@@ -93,7 +89,7 @@ public class nsc {
     		for(String s: servers) {
     			String fields[] = s.split("\\@"); 
     			InetAddress addr = InetAddress.getByName(fields[0]);
-    			int port = DEFAULT_PORT;
+    			int port = DNSClient.DEFAULT_PORT;
     			if(fields.length>1) {
     				port = Integer.parseInt(fields[1]);
     			}
@@ -103,7 +99,7 @@ public class nsc {
     	}
     	// if no name server was specificed (nor in /etc/resolv.conf nor in '-s' option) use localhost
     	if(client.getServers().size()==0) {
-    		client.addServer(InetAddress.getByName(DEFAULT_SERVER), DEFAULT_PORT);
+    		client.addServer(InetAddress.getByName(DNSClient.DEFAULT_SERVER), DNSClient.DEFAULT_PORT);
     	}
     	
     	// recursion desidered flag
@@ -113,8 +109,8 @@ public class nsc {
        	client.setTcpEnabled(!cmdline.hasOption("no-tcp"));
        	client.setUdpEnabled(!cmdline.hasOption("no-udp"));
 
-    	int timeout = Integer.parseInt(cmdline.getOptionValue('T', DEFAULT_TIMEOUT));
-    	int numAttempts = Integer.parseInt(cmdline.getOptionValue('a', DEFAULT_ATTEMPTS));
+    	int timeout = Integer.parseInt(cmdline.getOptionValue('T', DNSClient.DEFAULT_TIMEOUT.toString()));
+    	int numAttempts = Integer.parseInt(cmdline.getOptionValue('a', DNSClient.DEFAULT_NUM_ATTEMPTS.toString()));
     	
        	client.setTimeout(timeout);
        	client.setNumAttempts(numAttempts);
@@ -180,7 +176,6 @@ public class nsc {
     		List<String> nameservers = new LinkedList<String>();
     		List<String> searchList = new LinkedList<String>();
     		List<String> sortList = new LinkedList<String>();
-    		List<String> options = new LinkedList<String>();
     		
     		BufferedReader reader = new BufferedReader(new FileReader(f));
     		String line = null;
@@ -204,12 +199,16 @@ public class nsc {
     				sortList.add(fields[1]);
     			}
     			else if("options".equals(fields[0])) {
-    				options.add(fields[1]);
+    				String opt = fields[1].trim();
+    				if(opt.startsWith("ndots:")) {
+    					int ndots = Integer.parseInt(opt.split("\\:")[1]);
+    					client.setNdots(ndots);
+    				}
     			}
     		}
     		reader.close();
     		for(String server: nameservers) {
-    			client.addServer(InetAddress.getByName(server), 53);
+    			client.addServer(InetAddress.getByName(server), DNSClient.DEFAULT_PORT);
     		}
     	}
     	
