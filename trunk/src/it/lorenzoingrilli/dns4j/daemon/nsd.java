@@ -9,7 +9,7 @@ import it.lorenzoingrilli.dns4j.daemon.plugins.UDPServerPlugin;
 import it.lorenzoingrilli.dns4j.daemon.resolver.ScriptedResolver;
 import it.lorenzoingrilli.dns4j.daemon.resolver.YamlResolver;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
-//import it.lorenzoingrilli.dns4j.daemon.resolver.DBAuthResolver;
+import it.lorenzoingrilli.dns4j.daemon.resolver.DBAuthResolver;
 import it.lorenzoingrilli.dns4j.daemon.util.FileSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
@@ -23,6 +23,7 @@ import java.net.InetAddress;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.dbcp.BasicDataSource;
 //import org.apache.commons.dbcp.BasicDataSource;
 
 import com.esotericsoftware.yamlbeans.YamlConfig;
@@ -62,8 +63,8 @@ public class nsd extends CLI {
 		config.setClassTag("yamlresolver", YamlResolver.class);		 
 		config.setClassTag("scriptedresolver", ScriptedResolver.class);
 //		config.setClassTag("recursiveresolver", RecursiveAsyncResolver.class);
-//		config.setClassTag("dbresolver", DBAuthResolver.class);
-//		config.setClassTag("datasource", BasicDataSource.class);
+		config.setClassTag("dbresolver", DBAuthResolver.class);
+		config.setClassTag("datasource", BasicDataSource.class);
 		config.setClassTag("log", LogPlugin.class);		 
 		config.setClassTag("tcp", TCPServerPlugin.class);
 		config.setClassTag("udp", UDPServerPlugin.class);

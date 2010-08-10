@@ -49,6 +49,8 @@
 	<unjar src="${libdir}/yamlbeans-1.04.jar" dest="${buildsrcdir}"/>
 	<unjar src="${libdir}/commons-cli-1.2.jar" dest="${buildsrcdir}"/>	
 	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-pool-1.5.4.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-dbcp-1.4.jar" dest="${buildsrcdir}"/>
 	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-all.jar">
 		<manifest>			
 			<attribute name="Main-Class" value="${mainclass}"/>
@@ -58,6 +60,8 @@
 	<unjar src="${libdir}/yamlbeans-1.04.jar" dest="${buildsrcgdir}"/>
 	<unjar src="${libdir}/commons-cli-1.2.jar" dest="${buildsrcgdir}"/>
 	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcgdir}"/>
+	<unjar src="${libdir}/commons-pool-1.5.4.jar" dest="${buildsrcgdir}"/>
+	<unjar src="${libdir}/commons-dbcp-1.4.jar" dest="${buildsrcgdir}"/>
 	<jar basedir="${buildsrcgdir}" destfile="${distdir}/dns4j-g-all.jar">
 		<manifest>			
 			<attribute name="Main-Class" value="${mainclass}"/>
