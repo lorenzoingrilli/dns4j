@@ -20,6 +20,18 @@ public class SoaImpl extends RRSpecificImpl implements Soa {
 	public SoaImpl() {
         super(Clazz.IN, Type.SOA);
     }
+	
+	public SoaImpl(String name, String mname, String rname, long serial, long refresh, long retry, long expire, long minimum) {
+        this();
+        setName(name);
+        setMname(mname);
+        setRname(rname);
+        setSerial(serial);
+        setRefresh(refresh);
+        setRetry(retry);
+        setExpire(expire);
+        setMinimum(minimum);
+    }
 
     @Override
     public String toString() {

@@ -16,6 +16,13 @@ public class AImpl extends RRSpecificImpl implements A {
     public AImpl() {
         super(Clazz.IN, Type.A);
     }
+    
+    public AImpl(String name, Inet4Address address, long ttl) {
+    	this();
+    	setName(name);
+    	setAddress(address);
+    	setTtl(ttl);
+    }
 
     @Override
     public String toString() {
