@@ -25,7 +25,7 @@
 <!-- 
 	Build project and create distributions JARs
 -->
-<target name="build" depends="dep">	
+<target name="build" depends="dep,clean">	
 	
 	<mkdir dir="${distdir}"/>
 	
@@ -51,6 +51,8 @@
 	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcdir}"/>
 	<unjar src="${libdir}/commons-pool-1.5.4.jar" dest="${buildsrcdir}"/>
 	<unjar src="${libdir}/commons-dbcp-1.4.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-modeler-2.0.1.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-logging-1.1.1.jar" dest="${buildsrcdir}"/>
 	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-all.jar">
 		<manifest>			
 			<attribute name="Main-Class" value="${mainclass}"/>
@@ -62,6 +64,8 @@
 	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcgdir}"/>
 	<unjar src="${libdir}/commons-pool-1.5.4.jar" dest="${buildsrcgdir}"/>
 	<unjar src="${libdir}/commons-dbcp-1.4.jar" dest="${buildsrcgdir}"/>
+	<unjar src="${libdir}/commons-modeler-2.0.1.jar" dest="${buildsrcgdir}"/>
+	<unjar src="${libdir}/commons-logging-1.1.1.jar" dest="${buildsrcgdir}"/>
 	<jar basedir="${buildsrcgdir}" destfile="${distdir}/dns4j-g-all.jar">
 		<manifest>			
 			<attribute name="Main-Class" value="${mainclass}"/>

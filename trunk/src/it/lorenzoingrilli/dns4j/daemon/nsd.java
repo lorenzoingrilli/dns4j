@@ -2,6 +2,7 @@ package it.lorenzoingrilli.dns4j.daemon;
 
 import it.lorenzoingrilli.dns4j.cli.CliApplication;
 //import it.lorenzoingrilli.dns4j.daemon.plugins.JMXPlugin;
+import it.lorenzoingrilli.dns4j.daemon.plugins.JmxPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.LogPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.TCPServerPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.UDPServerPlugin;
@@ -24,7 +25,6 @@ import java.net.InetAddress;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.dbcp.BasicDataSource;
-//import org.apache.commons.dbcp.BasicDataSource;
 
 import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -68,7 +68,7 @@ public class nsd extends CliApplication {
 		config.setClassTag("log", LogPlugin.class);		 
 		config.setClassTag("tcp", TCPServerPlugin.class);
 		config.setClassTag("udp", UDPServerPlugin.class);
-//		config.setClassTag("jmx", JMXPlugin.class);
+		config.setClassTag("jmx", JmxPlugin.class);
 		config.setScalarSerializer(InetAddress.class, new InetAddressSerializer());
 		config.setScalarSerializer(Inet4Address.class, new Inet4AddressSerializer());
 		config.setScalarSerializer(Inet6Address.class, new Inet6AddressSerializer());
