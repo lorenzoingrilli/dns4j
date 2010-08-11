@@ -1,9 +1,9 @@
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
-import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
 import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.daemon.Kernel;
 import it.lorenzoingrilli.dns4j.daemon.resolver.ServerQueryContext;
 import it.lorenzoingrilli.dns4j.daemon.resolver.ServerSyncResolver;
 import it.lorenzoingrilli.dns4j.net.TCP;
@@ -25,7 +25,7 @@ public class TCPServerPlugin implements Runnable, Plugin {
 	private Serializer serializer;
 
 	private int port;
-	private EventDispatcher dispatcher;
+	private Kernel kernel;
 	
 	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
 	public TCPServerPlugin(int port, ServerSyncResolver<ServerQueryContext> resolver, Executor executor, Serializer serializer) {
@@ -36,8 +36,8 @@ public class TCPServerPlugin implements Runnable, Plugin {
 	}
 	
 	@Override
-	public void init(EventDispatcher dispatcher) {
-		this.dispatcher = dispatcher;
+	public void init(Kernel kernel) {
+		this.kernel = kernel;
 	}
 
 	@Override
@@ -62,11 +62,11 @@ public class TCPServerPlugin implements Runnable, Plugin {
 					try {
 					// WARN: we should manage multiple request on the same tcp connection
 					Message request = serializer.deserialize(socket.getInputStream());
-					dispatcher.dispatch(new EventRecv(this, request));
+					kernel.dispatch(new EventRecv(this, request));
 					Message response = resolver.query(request, new ServerQueryContext(socket.getInetAddress(), socket.getPort()));
 					if(response==null) return;
 					serializer.serialize(response, socket.getOutputStream());
-					dispatcher.dispatch(new EventSent(this, response));
+					kernel.dispatch(new EventSent(this, response));
 					//socket.close();
 					}
 					catch(IOException e) {

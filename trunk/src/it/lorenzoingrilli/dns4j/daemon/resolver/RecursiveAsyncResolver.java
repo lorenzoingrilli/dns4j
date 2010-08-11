@@ -1,7 +1,7 @@
 package it.lorenzoingrilli.dns4j.daemon.resolver;
 
-import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.daemon.Kernel;
 import it.lorenzoingrilli.dns4j.net.UDP;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
@@ -136,7 +136,7 @@ implements AsyncResolver, Plugin {
 	}
 
 	@Override
-	public void init(EventDispatcher dispatcher) {	
+	public void init(Kernel kernel) {
 	}
 
 	@Override

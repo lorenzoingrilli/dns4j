@@ -5,6 +5,9 @@ import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Lorenzo Ingrilli'
+ */
 public class QuestionResponse {
 	private List<RR> answer = new LinkedList<RR>();
 	private List<RR> authority = new LinkedList<RR>();

@@ -6,6 +6,9 @@ import java.util.List;
 
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 
+/**
+ * @author Lorenzo Ingrilli'
+ */
 public class Zone {
 	private String name;
 	private List<RR> rrs;

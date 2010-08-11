@@ -4,21 +4,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.lorenzoingrilli.dns4j.daemon.Event;
-import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
 import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.PluginEventReceiver;
+import it.lorenzoingrilli.dns4j.daemon.Kernel;
 
 public class LogPlugin implements PluginEventReceiver {
 
 	private Logger logger = Logger.getLogger(LogPlugin.class.getName());
 	
 	@Override
-	public void destroy() {
+	public void init(Kernel kernel) {
 	}
 
 	@Override
-	public void init(EventDispatcher dispatcher) {
+	public void destroy() {
 	}
 
 	@Override

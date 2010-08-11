@@ -2,6 +2,9 @@ package it.lorenzoingrilli.dns4j.daemon.resolver;
 
 import java.net.InetAddress;
 
+/**
+ * @author Lorenzo Ingrilli'
+ */
 public class ServerQueryContext {
 	private InetAddress address;
 	private int port;

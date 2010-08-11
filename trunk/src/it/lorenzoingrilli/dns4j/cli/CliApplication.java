@@ -7,13 +7,18 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class CLI {
+/**
+ * Base class for command line applications 
+ * 
+ * @author Lorenzo Ingrilli'
+ */
+public class CliApplication {
 		
 	private Options options;
 	private String args[];
 	private CommandLine cmdLine;
 	
-	public CLI() { 
+	public CliApplication() { 
 	}
 	
 	public void startup() throws Exception {

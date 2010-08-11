@@ -1,6 +1,6 @@
 package it.lorenzoingrilli.dns4j.daemon;
 
-import it.lorenzoingrilli.dns4j.cli.CLI;
+import it.lorenzoingrilli.dns4j.cli.CliApplication;
 //import it.lorenzoingrilli.dns4j.daemon.plugins.JMXPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.LogPlugin;
 import it.lorenzoingrilli.dns4j.daemon.plugins.TCPServerPlugin;
@@ -34,7 +34,7 @@ import com.esotericsoftware.yamlbeans.YamlReader;
  *
  * @author Lorenzo Ingrilli'
  */
-public class nsd extends CLI {
+public class nsd extends CliApplication {
     
 	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"nsd.yml";
 	
@@ -43,7 +43,7 @@ public class nsd extends CLI {
 		_nsd.startup();
 	}
 
-	private PluginManager pm = new PluginManagerImpl();
+	private Kernel kernel = new KernelImpl();
 	
 	public nsd(String args[]) {
 		super();
@@ -74,21 +74,16 @@ public class nsd extends CLI {
 		config.setScalarSerializer(Inet6Address.class, new Inet6AddressSerializer());
 		config.setScalarSerializer(File.class, new FileSerializer());
 
-		pm.init();
+		kernel.init();
 		Object param = null;
 		while( (param = reader.read()) != null) {			 
-			if(param instanceof Plugin) {
-				pm.load((Plugin) param);
-			}
-			else {
-				System.out.println("Load component "+param);
-			}
+				kernel.load(param);
 		}
 	}
 	
 	@Override
 	public void shutdown() {
-		pm.destroy();
+		kernel.destroy();
 	}
     
 }

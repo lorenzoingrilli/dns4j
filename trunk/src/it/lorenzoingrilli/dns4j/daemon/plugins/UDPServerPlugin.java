@@ -1,9 +1,9 @@
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
-import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
 import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.daemon.Kernel;
 import it.lorenzoingrilli.dns4j.daemon.TPExecutor;
 import it.lorenzoingrilli.dns4j.daemon.resolver.ServerQueryContext;
 import it.lorenzoingrilli.dns4j.daemon.resolver.ServerSyncResolver;
@@ -32,7 +32,7 @@ public class UDPServerPlugin implements Runnable, Plugin {
 	private Executor executor;
 	private Serializer serializer;
 	private int port;
-	private EventDispatcher dispatcher;
+	private Kernel kernel;
 	
 	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
 	public UDPServerPlugin(int port, Resolver resolver, Executor executor, Serializer serializer) {
@@ -43,8 +43,8 @@ public class UDPServerPlugin implements Runnable, Plugin {
 	}
 	
 	@Override
-	public void init(EventDispatcher dispatcher) {
-		this.dispatcher = dispatcher;
+	public void init(Kernel kernel) {
+		this.kernel = kernel;
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class UDPServerPlugin implements Runnable, Plugin {
 				@Override
 				public void run() {
 					Message request = serializer.deserialize(packet.getData());
-					dispatcher.dispatch(new EventRecv(this, request));
+					kernel.dispatch(new EventRecv(this, request));
 					
 					if(resolver instanceof AsyncResolver) {
 						((AsyncResolver) resolver).asyncQuery(request, new SendResponse(packet.getAddress(), packet.getPort(), serializer, socket));
@@ -83,7 +83,7 @@ public class UDPServerPlugin implements Runnable, Plugin {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					dispatcher.dispatch(new EventSent(this, response));
+					kernel.dispatch(new EventSent(this, response));
 				}
 			});
 		}

@@ -1,7 +1,7 @@
 package it.lorenzoingrilli.dns4j.daemon.resolver;
 
-import it.lorenzoingrilli.dns4j.daemon.EventDispatcher;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
+import it.lorenzoingrilli.dns4j.daemon.Kernel;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
@@ -33,7 +33,7 @@ import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
 /**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+ * @author Lorenzo Ingrilli'
  */
 public class YamlResolver extends AuthoritativeResolver implements Plugin, Runnable {
 		
@@ -146,7 +146,7 @@ public class YamlResolver extends AuthoritativeResolver implements Plugin, Runna
 	}
 
 	@Override
-	public void init(EventDispatcher dispatcher) {	
+	public void init(Kernel kernel) {	
 	}
 
 	@Override
