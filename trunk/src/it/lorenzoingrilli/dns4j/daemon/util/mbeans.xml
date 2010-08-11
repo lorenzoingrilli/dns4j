@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE mbeans-descriptors PUBLIC
+	"-//Apache Software Foundation//DTD Model MBeans Configuration File"
+	"http://jakarta.apache.org/commons/dtds/mbeans-descriptors.dtd">
+<mbeans-descriptors>
+
+	<mbean name="org.apache.commons.dbcp.BasicDataSource" type="ManagedBean" group="datasource" domain="dns4j">
+		<attribute name="initialSize" type="int" writeable="false"/>
+		<attribute name="driverClassName" type="java.lang.String" writeable="false"/>		
+		<attribute name="defaultReadOnly" type="boolean"/>
+		<attribute name="maxActive" type="int"/>
+		<attribute name="maxIdle" type="int"/>
+		<attribute name="minIdle" type="int"/>
+		<attribute name="numActive" type="int"/>
+		<attribute name="numIdle" type="int"/>
+		<attribute name="maxWait" type="int"/>
+		<attribute name="testOnBorrow" type="boolean"/>
+		<attribute name="testOnReturn" type="boolean"/>
+		<attribute name="testWhileIdle" type="boolean"/>
+		<attribute name="timeBetweenEvictionRunsMillis" type="boolean"/>
+		<attribute name="url" type="java.lang.String"/>
+		<attribute name="username" type="java.lang.String"/>
+		<attribute name="password" type="java.lang.String" readable="false"/>
+		<attribute name="validationQuery" type="java.lang.String"/>
+		<attribute name="validationQueryTimeout" type="int"/>
+    </mbean>
+
+</mbeans-descriptors>
