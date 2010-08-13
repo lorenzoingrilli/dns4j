@@ -14,6 +14,13 @@ public class CNameImpl extends RRSpecificImpl implements CName {
     public CNameImpl() {
         super(Clazz.IN, Type.CNAME);
     }
+    
+    public CNameImpl(String name, String cname, long ttl) {
+    	this();
+    	setName(name);
+    	setCname(cname);
+    	setTtl(ttl);
+    }
 
     @Override
     public String toString() {
