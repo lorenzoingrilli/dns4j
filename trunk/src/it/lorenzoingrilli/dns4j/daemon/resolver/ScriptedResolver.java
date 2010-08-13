@@ -84,6 +84,14 @@ public class ScriptedResolver implements ServerSyncResolver<ServerQueryContext> 
         this.file = file;
 	}
 	
+	public void setFilename(String filename) {
+		setFile(new File(filename));
+	}
+	
+	public String getFilename() {
+		return file.getPath();
+	}
+	
     private static String getExtension(String filename) {
         String fields[] = filename.split("\\.");
         return fields[fields.length-1];

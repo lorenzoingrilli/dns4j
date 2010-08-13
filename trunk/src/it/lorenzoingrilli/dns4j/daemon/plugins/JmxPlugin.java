@@ -45,8 +45,15 @@ public class JmxPlugin implements Plugin {
 		
 		for(Object component: this.kernel.components()) {
 			try {
-				ManagedBean bean = registry.findManagedBean(component.getClass().getName());
+				//ManagedBean bean = registry.findManagedBean(component.getClass().getName());
+				ManagedBean bean = null;
+				Class<?> clazz = component.getClass();
+				while(bean==null && clazz!=null) {
+					bean = registry.findManagedBean(clazz.getName());
+					clazz = clazz.getSuperclass();					
+				}
 				if(bean==null) continue;
+				
 				ModelMBean mbean = bean.createMBean(component);
 				ObjectName name = new ObjectName(bean.getDomain()+":name="+bean.getGroup()+(++id)+",type="+bean.getGroup());
 				mbs.registerMBean(mbean, name);

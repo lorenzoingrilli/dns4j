@@ -137,6 +137,14 @@ public class YamlResolver extends AuthoritativeResolver implements Plugin, Runna
 		lastModified = file.lastModified();		
 	}
 	
+	public void setFilename(String filename) {
+		setFile(new File(filename));
+	}
+	
+	public String getFilename() {
+		return file.getPath();
+	}
+	
 	public long getLiveRefresh() {
 		return liveRefresh;
 	}
