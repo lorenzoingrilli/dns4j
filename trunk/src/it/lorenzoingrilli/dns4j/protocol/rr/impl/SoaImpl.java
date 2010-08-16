@@ -21,9 +21,10 @@ public class SoaImpl extends RRSpecificImpl implements Soa {
         super(Clazz.IN, Type.SOA);
     }
 	
-	public SoaImpl(String name, String mname, String rname, long serial, long refresh, long retry, long expire, long minimum) {
+	public SoaImpl(String name, long ttl, String mname, String rname, long serial, long refresh, long retry, long expire, long minimum) {
         this();
         setName(name);
+        setTtl(ttl);
         setMname(mname);
         setRname(rname);
         setSerial(serial);

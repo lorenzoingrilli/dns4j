@@ -16,6 +16,14 @@ public class MxImpl extends RRSpecificImpl implements Mx {
         super(Clazz.IN, Type.MX);
     }
     
+    public MxImpl(String name, long ttl, String exchange, int preference) {
+        this();
+        setName(name);
+        setTtl(ttl);
+        setExchange(exchange);
+        setPreference(preference);
+    }
+    
     @Override
     public String toString() {
         return "MX(name="+getName()+", ttl="+getTtl()+", preference="+preference+", exchange="+exchange+")";
