@@ -20,7 +20,7 @@
 <property name="distdir" location="${workdir}/dist"/>
 <property name="docsdir" location="${workdir}/javadocs"/>
 	
-<property name="mainclass" value="it.lorenzoingrilli.dns4j.cli.nsc"/>
+<property name="mainclass" value="it.lorenzoingrilli.dns4j.nsc"/>
 	
 <!-- 
 	Build project and create distributions JARs
