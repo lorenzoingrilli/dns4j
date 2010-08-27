@@ -16,6 +16,13 @@ public class AAAAImpl extends RRSpecificImpl implements AAAA {
     public AAAAImpl() {
         super(Clazz.IN, Type.AAAA);
     }
+    
+    public AAAAImpl(String name, long ttl, Inet6Address address) {
+    	this();
+    	setName(name);
+    	setTtl(ttl);
+    	setAddress(address);    	
+    }
 
     @Override
     public String toString() {

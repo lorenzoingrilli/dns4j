@@ -25,13 +25,16 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.Executor;
 
 public class UDPServerPlugin implements Runnable, Plugin {
-
+	
 	private int timeout = UDP.DEFAULT_TIMEOUT;
 	private DatagramSocket socket = null;
 	private Resolver resolver;
 	private Executor executor;
 	private Serializer serializer;
 	private int port;
+	private int sendBufferSize = UDP.DEFAULT_SEND_BUFFER_SIZE;
+	private int recvBufferSize = UDP.DEFAULT_RECV_BUFFER_SIZE;
+	private int maxPacketSize = UDP.MAX_PACKET_SIZE;
 	private Kernel kernel;
 	
 	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
@@ -54,21 +57,26 @@ public class UDPServerPlugin implements Runnable, Plugin {
 	@Override
 	public void run() {
 		try {
-			socket = UDP.open(port, timeout);
+			socket = UDP.open(port, timeout, sendBufferSize, recvBufferSize);
 		} catch (SocketException e) {
 			throw new RuntimeException(e);
 		}
 		
-		while(!Thread.interrupted())
+		while(!Thread.currentThread().isInterrupted())
 		try
 		{
-			final byte buffer[] = new byte[UDP.DEFAULT_BUFFER_SIZE];
+			final byte buffer[] = new byte[maxPacketSize];
 			final DatagramPacket packet = UDP.receive(socket, buffer);
+			final long ts = System.currentTimeMillis();
+			
+			// skip packets greater than 512 bytes
+			if(packet.getLength()>maxPacketSize) continue;
+			
 			executor.execute(new Runnable() {
 				@Override
-				public void run() {
-					Message request = serializer.deserialize(packet.getData());
-					kernel.dispatch(new EventRecv(this, request));
+				public void run() {										
+					Message request = serializer.deserialize(packet.getData(), packet.getOffset(), packet.getLength());
+					kernel.signal(new EventRecv(this, request, ts));
 					
 					if(resolver instanceof AsyncResolver) {
 						((AsyncResolver) resolver).asyncQuery(request, new SendResponse(packet.getAddress(), packet.getPort(), serializer, socket));
@@ -83,7 +91,8 @@ public class UDPServerPlugin implements Runnable, Plugin {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					kernel.dispatch(new EventSent(this, response));
+					long ts2 = System.currentTimeMillis();
+					kernel.signal(new EventSent(this, response, ts2));
 				}
 			});
 		}
@@ -126,6 +135,38 @@ public class UDPServerPlugin implements Runnable, Plugin {
 
 	public void setSerializer(Serializer serializer) {
 		this.serializer = serializer;
+	}
+
+	public int getSendBufferSize() {
+		return sendBufferSize;
+	}
+
+	public void setSendBufferSize(int sendBufferSize) {
+		this.sendBufferSize = sendBufferSize;
+	}
+
+	public int getRecvBufferSize() {
+		return recvBufferSize;
+	}
+
+	public void setRecvBufferSize(int recvBufferSize) {
+		this.recvBufferSize = recvBufferSize;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	public int getMaxPacketSize() {
+		return maxPacketSize;
+	}
+
+	public void setMaxPacketSize(int maxPacketSize) {
+		this.maxPacketSize = maxPacketSize;
 	}
 
 }

@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.resolver.impl;
 
+import it.lorenzoingrilli.dns4j.annotations.Sperimental;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Serializer;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Lorenzo Ingrilli'
  */
+@Sperimental
 public class AsyncDNSClient implements AsyncResolver {
 
 	private Serializer serializer = new SerializerImpl();
@@ -87,7 +89,7 @@ public class AsyncDNSClient implements AsyncResolver {
             // Leggo messaggi dal socket
             DatagramPacket pResp = new DatagramPacket(buffer, buffer.length);
             socket.receive(pResp);
-            Message resp = serializer.deserialize(buffer);
+            Message resp = serializer.deserialize(pResp.getData(), pResp.getOffset(), pResp.getLength());
             DelayedRequest req = requests.get(resp.getHeader().getId());
             if(req!=null) {
                 requests.remove(resp.getHeader().getId());

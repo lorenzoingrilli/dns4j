@@ -18,11 +18,11 @@ public class PtrImpl extends RRSpecificImpl implements Ptr {
         super(Clazz.IN, Type.PTR);
     }
     
-    public PtrImpl(String name, String ptrdname, long ttl) {
+    public PtrImpl(String name, long ttl, String ptrdname) {
     	this();
-    	setName(name);
-    	setPtrDname(ptrdname);
+    	setName(name);    	
     	setTtl(ttl);
+    	setPtrDname(ptrdname);
     }
     
     public static InetAddress nameToAddress(String name) throws UnknownHostException {

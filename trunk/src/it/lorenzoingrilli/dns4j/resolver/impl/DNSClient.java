@@ -74,7 +74,7 @@ public class DNSClient implements SyncResolver {
     	Message resp = null;
     	int triesCount = 0;
     	boolean success = false;    	
-        DatagramSocket socket = UDP.open(timeout);
+        DatagramSocket socket = UDP.open(timeout, UDP.DEFAULT_SEND_BUFFER_SIZE, UDP.DEFAULT_RECV_BUFFER_SIZE);
         while(!success && triesCount<numTries) 
 	        try {
 	        	triesCount++;
@@ -87,14 +87,14 @@ public class DNSClient implements SyncResolver {
 	            	netEventListener.onRecv(udpResp.getData(), udpResp.getOffset(), udpResp.getLength());
 	            }
 	            //TODO check: src host/port should be equals to request host/port
-	            resp = serializer.deserialize(buffer);            
+	            resp = serializer.deserialize(udpResp.getData(), udpResp.getOffset(), udpResp.getLength());            
 	            if(resp.getHeader().getId()==request.getHeader().getId())
 	                success = true;
 	            else
 	                resp = null;
 	        }
 	        catch(SocketTimeoutException e) {
-	        	//e.printStackTrace();
+	        	e.printStackTrace();
 	        }
         UDP.close(socket);
         return resp;

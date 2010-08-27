@@ -53,7 +53,7 @@ public class SerializerImplTest {
     		Message m = tc.getMsg();
         	byte[] buffer = new byte[512];
         	serializer.serialize(m, buffer);
-        	Message m1 = serializer.deserialize(buffer);        	
+        	Message m1 = serializer.deserialize(buffer, 0, buffer.length);        	
         	Assert.assertTrue(m.equals(m1));
     	}    	
 	}
@@ -63,7 +63,7 @@ public class SerializerImplTest {
 	public void testB() {
     	for(TestCase tc: testCases) {
     		byte[] buffer = Base64.decodeBase64(tc.getB64());
-    		Message m = serializer.deserialize(buffer);
+    		Message m = serializer.deserialize(buffer, 0, buffer.length);
     		byte[] buffer2 = new byte[buffer.length];
         	serializer.serialize(m, buffer2);
         	Assert.assertArrayEquals(buffer, buffer2);		
@@ -86,7 +86,7 @@ public class SerializerImplTest {
 	public void testD() {
     	for(TestCase tc: testCases) {
     		byte[] mb = Base64.decodeBase64(tc.getB64());
-    		Message m = serializer.deserialize(mb);
+    		Message m = serializer.deserialize(mb, 0, mb.length);
     		Assert.assertTrue(m.equals(tc.getMsg()));		
     	} 
 	}

@@ -40,8 +40,7 @@ public class CliApplication {
 		run();
 	}
 	
-	public void run() throws Exception {
-		
+	public void run() throws Exception {		
 	}
 	
 	public void shutdown()  {

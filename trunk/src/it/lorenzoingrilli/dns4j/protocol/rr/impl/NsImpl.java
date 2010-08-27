@@ -15,11 +15,11 @@ public class NsImpl extends RRSpecificImpl implements Ns {
         super(Clazz.IN, Type.NS);
     }
     
-    public NsImpl(String name, String nsdname, long ttl) {
+    public NsImpl(String name, long ttl, String nsdname) {
     	this();
     	setName(name);
-    	setNsdName(nsdname);
     	setTtl(ttl);
+    	setNsdName(nsdname);    	
     }
     
     @Override

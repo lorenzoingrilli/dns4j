@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.daemon.resolver;
 
+import it.lorenzoingrilli.dns4j.annotations.Sperimental;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
 import it.lorenzoingrilli.dns4j.daemon.Kernel;
 import it.lorenzoingrilli.dns4j.net.UDP;
@@ -27,6 +28,7 @@ import java.util.logging.Logger;
 /**
  * @author Lorenzo Ingrilli'
  */
+@Sperimental
 public class RecursiveAsyncResolver
 implements AsyncResolver, Plugin {
 
@@ -46,7 +48,7 @@ implements AsyncResolver, Plugin {
 
     @ConstructorProperties(value={"timeout"})
     public RecursiveAsyncResolver(int timeout) throws UnknownHostException, SocketException {
-    	socket = UDP.open(timeout);
+    	socket = UDP.open(timeout, UDP.DEFAULT_SEND_BUFFER_SIZE, UDP.DEFAULT_RECV_BUFFER_SIZE);
    }
 	
 	@Override
@@ -91,7 +93,7 @@ implements AsyncResolver, Plugin {
             // Leggo messaggi dal socket
             DatagramPacket pResp = new DatagramPacket(buffer, buffer.length);
             socket.receive(pResp);
-            Message resp = serializer.deserialize(buffer);
+            Message resp = serializer.deserialize(pResp.getData(), pResp.getOffset(), pResp.getLength());
             //System.out.println("RECV "+resp.getHeader().getId());
             DelayedRequest req = requests.get(resp.getHeader().getId());
             if(req!=null) {

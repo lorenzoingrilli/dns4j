@@ -17,11 +17,11 @@ public class AImpl extends RRSpecificImpl implements A {
         super(Clazz.IN, Type.A);
     }
     
-    public AImpl(String name, Inet4Address address, long ttl) {
+    public AImpl(String name, long ttl, Inet4Address address) {
     	this();
     	setName(name);
-    	setAddress(address);
     	setTtl(ttl);
+    	setAddress(address);    	
     }
 
     @Override

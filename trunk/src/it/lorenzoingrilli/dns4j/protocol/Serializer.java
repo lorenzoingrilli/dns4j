@@ -16,5 +16,5 @@ public interface Serializer {
     public void serialize(Message m, OutputStream os) throws IOException;
     public int serialize(Message m, byte[] buffer);
     public Message deserialize(InputStream is) throws IOException;
-    public Message deserialize(byte[] buffer);
+    public Message deserialize(byte[] buffer, int offset, int lenght);
 }

@@ -18,8 +18,10 @@ import it.lorenzoingrilli.dns4j.daemon.Kernel;
 
 public class JmxPlugin implements Plugin {
 	
-	private static Logger logger = Logger.getLogger(JmxPlugin.class.getName());
+	private static final String MODELER_CONF = "/it/lorenzoingrilli/dns4j/daemon/util/mbeans.xml";
 	
+	private static Logger logger = Logger.getLogger(JmxPlugin.class.getName());
+		
 	private Kernel kernel;
 	private long id = 0;
 	
@@ -29,7 +31,7 @@ public class JmxPlugin implements Plugin {
 		
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 		
-		InputStream is = this.getClass().getResourceAsStream("/it/lorenzoingrilli/dns4j/daemon/util/mbeans.xml");		
+		InputStream is = this.getClass().getResourceAsStream(MODELER_CONF);		
 		Registry registry = Registry.getRegistry(null, null);
 		
 		try {
@@ -45,7 +47,6 @@ public class JmxPlugin implements Plugin {
 		
 		for(Object component: this.kernel.components()) {
 			try {
-				//ManagedBean bean = registry.findManagedBean(component.getClass().getName());
 				ManagedBean bean = null;
 				Class<?> clazz = component.getClass();
 				while(bean==null && clazz!=null) {

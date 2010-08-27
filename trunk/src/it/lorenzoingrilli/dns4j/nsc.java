@@ -52,7 +52,7 @@ public class nsc {
     static {
     	options = new Options();
     	options.addOption(new Option("v", "verbose", false, "Verbose log level"));
-    	options.addOption(new Option("s", "server", true, "Nameserver host (default localhost)"));
+    	options.addOption(new Option("s", "server", true, "Nameserver host"));
     	options.addOption(new Option("n", "name", true, "Name to query (mandatory)"));
     	options.addOption(new Option("N", "no-recursion", false, "No recursion desidered"));
     	options.addOption(new Option("t", "type", true, "query type (default A)"));

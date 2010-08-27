@@ -15,6 +15,14 @@ public class HInfoImpl extends RRSpecificImpl implements HInfo {
 	public HInfoImpl() {
         super(Clazz.IN, Type.HINFO);
     }
+	
+    public HInfoImpl(String name, long ttl, String host, String cpu) {
+    	this();
+    	setName(name);    	
+    	setTtl(ttl);
+    	setHost(host);
+    	setCpu(cpu);
+    }
 
     @Override
     public String toString() {

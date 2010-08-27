@@ -14,6 +14,13 @@ public class TxtImpl extends RRSpecificImpl implements Txt {
 	public TxtImpl() {
         super(Clazz.IN, Type.TXT);
     }
+	
+    public TxtImpl(String name, long ttl, String data) {
+        this();
+        setName(name);
+        setTtl(ttl);
+        setData(data);
+    }
 
     @Override
     public String toString() {

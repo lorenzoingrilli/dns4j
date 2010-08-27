@@ -31,6 +31,9 @@
 	
 	<mkdir dir="${buildsrcdir}"/>
 	<javac debug="false" srcdir="${srcdir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
+	<copy todir="${buildsrcdir}">
+		<fileset dir="${srcdir}"/>
+	</copy>
 	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j.jar"/>
 	
 	<mkdir dir="${buildsrcgdir}"/>
@@ -72,7 +75,7 @@
 		</manifest>
 	</jar>
 </target>
-			
+	
 <!-- 
 	Generate Javadocs API documentation
 -->

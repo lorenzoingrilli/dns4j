@@ -23,7 +23,7 @@ import org.apache.commons.cli.ParseException;
  *
  * @author Lorenzo Ingrilli'
  */
-public class dbresolver {
+public class dbadmin {
     
 	private static final String DEFAULT_JDBCURL = "jdbc:mysql://localhost:3306/dns4j";	
 	private static final String DEFAULT_USERNAME = "dns4j";
@@ -92,7 +92,7 @@ public class dbresolver {
     }
     
     private static void executeScript(Connection connection, String filename) throws IOException, SQLException {
-		InputStream is = dbresolver.class.getResourceAsStream(filename);
+		InputStream is = dbadmin.class.getResourceAsStream(filename);
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		String sql = null;
 		while( (sql = r.readLine())!=null ){

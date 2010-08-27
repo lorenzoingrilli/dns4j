@@ -22,7 +22,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -39,15 +41,8 @@ public class YamlResolver extends AuthoritativeResolver implements Plugin, Runna
 		
 	private static Logger logger = Logger.getLogger(YamlResolver.class.getName());
 	
-	public static final long DEFAULT_LIVE_REFRESH = 5000; 
+	private static final long DEFAULT_LIVE_REFRESH = 5000; 
 		
-	public static final int DEFAULT_TTL = 86400;
-    public static final int DEFAULT_SOA_SERIAL = 1;
-    public static final int DEFAULT_SOA_REFRESH = 3600;
-    public static final int DEFAULT_SOA_RETRY = 600;
-    public static final int DEFAULT_SOA_EXPIRE = 86400;
-    public static final int DEFAULT_SOA_MINIMUM = 3600;
-
 	private File file = null;
 	private long liveRefresh = DEFAULT_LIVE_REFRESH;
 	private long lastModified = 0;
@@ -60,7 +55,7 @@ public class YamlResolver extends AuthoritativeResolver implements Plugin, Runna
 		map = parse(file);
 	}
 	
-	private static HashMap<ZoneEntryKey, List<RR>> parse(File file) throws IOException {		
+	private HashMap<ZoneEntryKey, List<RR>> parse(File file) throws IOException {		
 		YamlReader reader = new YamlReader(new FileReader(file));
 		YamlConfig config = reader.getConfig();
 		config.setClassTag("zone", Zone.class);
@@ -84,8 +79,8 @@ public class YamlResolver extends AuthoritativeResolver implements Plugin, Runna
 				for(Entry<ZoneEntryKey, List<RR>> e: es) {
 					map.put(e.getKey(), e.getValue());
 					for(RR rr: e.getValue()) {
-						if(rr.getTtl()==RRImpl.NONE)
-							rr.setTtl(DEFAULT_TTL);
+						if(rr.getTtl()==RRImpl.NONE)							
+							rr.setTtl(getDefaultTtl());
 					}
 				}
 		}
@@ -93,17 +88,13 @@ public class YamlResolver extends AuthoritativeResolver implements Plugin, Runna
 	}
 	
 	@Override
-	public QuestionResponse query(String qname, int qclass, int qtype) {
-		QuestionResponse qr = null;
+	public Collection<RR> query(String qname, int qclass, int qtype) {
 		ZoneEntryKey k = new ZoneEntryKey(qname.toLowerCase(), qclass, qtype);
 		List<RR> r = map.get(k);
-		if(r!=null)
-			for(RR rr: r) {
-				if(qr==null)
-					qr = new QuestionResponse();
-				qr.getAnswer().add(rr);
-			}
-		return qr;
+		if(r!=null) 
+			return r;
+		else
+			return new LinkedList<RR>();
 	}
 
 	@Override

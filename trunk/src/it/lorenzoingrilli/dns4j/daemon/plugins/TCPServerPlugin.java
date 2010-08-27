@@ -1,5 +1,6 @@
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
+import it.lorenzoingrilli.dns4j.annotations.Sperimental;
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
 import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
@@ -17,6 +18,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Executor;
 
+@Sperimental
 public class TCPServerPlugin implements Runnable, Plugin {
 
 	private ServerSocket ssocket = null;
@@ -60,13 +62,15 @@ public class TCPServerPlugin implements Runnable, Plugin {
 				@Override
 				public void run() {
 					try {
+					long ts = System.currentTimeMillis();
 					// WARN: we should manage multiple request on the same tcp connection
 					Message request = serializer.deserialize(socket.getInputStream());
-					kernel.dispatch(new EventRecv(this, request));
+					kernel.signal(new EventRecv(this, request, ts));
 					Message response = resolver.query(request, new ServerQueryContext(socket.getInetAddress(), socket.getPort()));
 					if(response==null) return;
 					serializer.serialize(response, socket.getOutputStream());
-					kernel.dispatch(new EventSent(this, response));
+					ts = System.currentTimeMillis();
+					kernel.signal(new EventSent(this, response, ts));
 					//socket.close();
 					}
 					catch(IOException e) {

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 
@@ -13,25 +12,26 @@ import java.net.SocketException;
  */
 public class UDP {
 
-	public static final int DEFAULT_SEND_BUFFER_SIZE = 512;
-	public static final int DEFAULT_RECV_BUFFER_SIZE = 512;
-	public static final int DEFAULT_BUFFER_SIZE = 512;
+	public static final int DEFAULT_SEND_BUFFER_SIZE = 62464;
+	public static final int DEFAULT_RECV_BUFFER_SIZE = 62464;
+	public static final int DEFAULT_BUFFER_SIZE = 512;	
 	public static final int DEFAULT_TCP_BUFFER_SIZE = 512;
 	public static final int DEFAULT_TIMEOUT = 5000;
 	public static final int DEFAULT_LISTEN_PORT = 53;
+	public static final int MAX_PACKET_SIZE = 512;
 	
-	public static DatagramSocket open(int timeout) throws SocketException {
+	public static DatagramSocket open(int timeout, int sendBufferSize, int recvBufferSize) throws SocketException {
 		DatagramSocket socket = new DatagramSocket();
-		socket.setSendBufferSize(DEFAULT_SEND_BUFFER_SIZE);
-		socket.setReceiveBufferSize(DEFAULT_RECV_BUFFER_SIZE);
+		socket.setSendBufferSize(sendBufferSize);
+		socket.setReceiveBufferSize(recvBufferSize);
 		socket.setSoTimeout(timeout);
 		return socket;
 	}
 	
-	public static DatagramSocket open(int port, int timeout) throws SocketException {
+	public static DatagramSocket open(int port, int timeout, int sendBufferSize, int recvBufferSize) throws SocketException {
 		DatagramSocket socket = new DatagramSocket(port);
-		socket.setSendBufferSize(DEFAULT_SEND_BUFFER_SIZE);
-		socket.setReceiveBufferSize(DEFAULT_RECV_BUFFER_SIZE);
+		socket.setSendBufferSize(sendBufferSize);
+		socket.setReceiveBufferSize(recvBufferSize);
 		socket.setSoTimeout(timeout);
 		return socket;
 	}
@@ -41,7 +41,9 @@ public class UDP {
 	}
 	
     public static DatagramPacket send(DatagramSocket socket, InetAddress host, int port, byte[] request, int requestLen) throws IOException {
-        return send(socket, new InetSocketAddress(host, port), request, requestLen);
+        DatagramPacket packet = new DatagramPacket(request, requestLen, host, port);
+        socket.send(packet);
+        return packet;
     }
     
     public static DatagramPacket send(DatagramSocket socket, SocketAddress socketAddress, byte[] request, int requestLen) throws IOException {

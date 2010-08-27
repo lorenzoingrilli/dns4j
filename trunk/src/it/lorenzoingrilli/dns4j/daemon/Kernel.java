@@ -10,7 +10,7 @@ public interface Kernel {
 	public void unload(Object component);	
 	public void unloadAll();
 	
-	public void dispatch(Event event);
+	public void signal(Event event);
 	
 	public List<Object> components();
 	

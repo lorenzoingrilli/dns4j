@@ -4,8 +4,8 @@ import it.lorenzoingrilli.dns4j.protocol.Message;
 
 public class EventRecv extends EventMessage  {
 
-	public EventRecv(Object emitter, Message message) {
-		super(emitter, message);
+	public EventRecv(Object emitter, Message message, long timestamp) {
+		super(emitter, message, timestamp);
 	}
 	
 }

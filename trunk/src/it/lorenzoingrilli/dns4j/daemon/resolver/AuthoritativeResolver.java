@@ -1,19 +1,28 @@
 package it.lorenzoingrilli.dns4j.daemon.resolver;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
+import it.lorenzoingrilli.dns4j.protocol.Clazz;
 import it.lorenzoingrilli.dns4j.protocol.Header;
 import it.lorenzoingrilli.dns4j.protocol.Message;
 import it.lorenzoingrilli.dns4j.protocol.Question;
 import it.lorenzoingrilli.dns4j.protocol.RetCodes;
 import it.lorenzoingrilli.dns4j.protocol.Type;
 import it.lorenzoingrilli.dns4j.protocol.impl.MessageImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.CName;
+import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 
 /**
  * @author Lorenzo Ingrilli'
  */
 abstract public class AuthoritativeResolver implements ServerSyncResolver<ServerQueryContext> {
-		
-	private boolean questionEcho = false;
-
+		 
+	private static final int DEFAULT_TTL = 86400;
+	
+	private int defaultTtl	= DEFAULT_TTL;
+	private boolean questionEcho = false;	
+	
 	@Override
 	public Message query(Message request, ServerQueryContext queryContext) {
 		return query(request);
@@ -22,54 +31,70 @@ abstract public class AuthoritativeResolver implements ServerSyncResolver<Server
 	@Override
 	public Message query(Message request)
 	{
+		Header reqHeader = request.getHeader();
+		// process only queries. Packets with no question bit are discarded 
+		if(reqHeader.isQuery()!=Header.QUESTION)
+			return null;
+		// process only packets with response code equals to 0 
+		if(reqHeader.getResponseCode()!=0)
+			return null;
+		// process only packets with not truncation bit 
+		if(reqHeader.isTruncated())
+			return null;
+		
 		Message response = new MessageImpl();
-		response.getHeader().setId(request.getHeader().getId());
-		response.getHeader().setRecursionDesidered(request.getHeader().isRecursionDesidered());
-		response.getHeader().setRecursionAvailable(false);
-		response.getHeader().setAuthoritative(true);
-		response.getHeader().setQuery(Header.ANSWER);
-				
-		for(Question q: request.getQuestions()) {
-			QuestionResponse r = query(q);
-			if(r!=null) {
-				response.getAnswer().addAll(r.getAnswer());
-				response.getAuthority().addAll(r.getAuthority());
-				response.getAdditional().addAll(r.getAdditional());
-			}
-		}
+		Header respHeader = response.getHeader(); 
+		respHeader.setId(reqHeader.getId());
+		respHeader.setRecursionDesidered(reqHeader.isRecursionDesidered());
+		respHeader.setRecursionAvailable(false);
+		respHeader.setAuthoritative(true);
+		respHeader.setQuery(Header.ANSWER);
+		
 		if(questionEcho)
 			response.getQuestions().addAll(request.getQuestions());
 		
-		if(response.getAnswer().size()==0) {
-			response.getHeader().setResponseCode(RetCodes.NOTFOUND);			
-			for(Question q: request.getQuestions()) {
-				int n = q.getQname().indexOf('.');
-				String zonename = q.getQname().substring(n+1);
-				QuestionResponse r = query(zonename, q.getQclass(), Type.SOA);
-				if(r!=null) {
-					response.getAnswer().addAll(r.getAnswer());
-					response.getAuthority().addAll(r.getAuthority());
-					response.getAdditional().addAll(r.getAdditional());
-				}
-				else {
-					System.out.println("soa not found");
-				}
+		for(Question q: request.getQuestions()) {			
+			response.getAnswer().addAll(query(q));
+			if(q.getQtype()==Type.A || q.getQtype()==Type.AAAA ) {
+				response.getAnswer().addAll(query(q.getQname(), q.getQclass(), Type.CNAME));
 			}
 		}
 		
-		response.getHeader().setQdCount(response.getQuestions().size());
-		response.getHeader().setAnCount(response.getAnswer().size());
-		response.getHeader().setNsCount(response.getAuthority().size());
-		response.getHeader().setArCount(response.getAdditional().size());
+		if(response.getAnswer().size()==0) {
+			respHeader.setResponseCode(RetCodes.NOTFOUND);			
+			for(Question q: request.getQuestions()) {
+				int n = q.getQname().indexOf('.');
+				String zonename = q.getQname().substring(n+1);
+				Collection<RR> rrs = query(zonename, q.getQclass(), Type.SOA);
+				response.getAnswer().addAll(rrs);
+			}
+		}
+		else {
+			// TODO: cname recursion resolving
+			LinkedList<RR> adds = new LinkedList<RR>();
+			for(RR rr: response.getAnswer()) {
+				if(rr.getType()==Type.CNAME) {
+					String alias = ((CName) rr).getCname();
+					adds.addAll(query(alias, Clazz.IN, Type.A));
+					adds.addAll(query(alias, Clazz.IN, Type.AAAA));
+				}
+			}
+			response.getAnswer().addAll(adds);
+		}
+		
+		respHeader.setQdCount(response.getQuestions().size());
+		respHeader.setAnCount(response.getAnswer().size());
+		respHeader.setNsCount(response.getAuthority().size());
+		respHeader.setArCount(response.getAdditional().size());
 		
 		return response;
 	}
 	
-	public QuestionResponse query(Question q) {
+	public Collection<RR> query(Question q) {
 		return query(q.getQname(), q.getQclass(), q.getQtype());
 	}
 	
-	abstract public QuestionResponse query(String qname, int qclass, int qtype);
+	abstract public Collection<RR> query(String qname, int qclass, int qtype);
 	
 	public boolean isQuestionEcho() {
 		return questionEcho;
@@ -77,6 +102,14 @@ abstract public class AuthoritativeResolver implements ServerSyncResolver<Server
 
 	public void setQuestionEcho(boolean questionEcho) {
 		this.questionEcho = questionEcho;
+	}
+
+	public int getDefaultTtl() {
+		return defaultTtl;
+	}
+
+	public void setDefaultTtl(int defaultTtl) {
+		this.defaultTtl = defaultTtl;
 	}
 }
 

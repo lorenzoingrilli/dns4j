@@ -4,24 +4,28 @@
 	"http://jakarta.apache.org/commons/dtds/mbeans-descriptors.dtd">
 <mbeans-descriptors>
 
-	<mbean name="it.lorenzoingrilli.dns4j.daemon.plugins.UDPServerPlugin" type="ManagedBean" group="net" domain="dns4j">
+	<mbean name="it.lorenzoingrilli.dns4j.daemon.plugins.UDPServerPlugin" type="ManagedBean" group="net" domain="dns4j" description="UDP DNS Connector">
 		<attribute name="port" type="int"/>
+		<attribute name="timeout" type="int"/>
+		<attribute name="sendBufferSize" type="int"/>
+		<attribute name="recvBufferSize" type="int"/>
+		<attribute name="maxPacketSize" type="int"/>		
     </mbean>
 
-	<mbean name="it.lorenzoingrilli.dns4j.daemon.plugins.TCPServerPlugin" type="ManagedBean" group="net" domain="dns4j">
+	<mbean name="it.lorenzoingrilli.dns4j.daemon.plugins.TCPServerPlugin" type="ManagedBean" group="net" domain="dns4j" description="TCP DNS Connector">
 		<attribute name="port" type="int"/>
     </mbean>
     
-	<mbean name="it.lorenzoingrilli.dns4j.daemon.resolver.ScriptedResolver" type="ManagedBean" group="resolver" domain="dns4j">
+	<mbean name="it.lorenzoingrilli.dns4j.daemon.resolver.ScriptedResolver" type="ManagedBean" group="resolver" domain="dns4j" description="Scripted Resolver">
 		<attribute name="filename" type="java.lang.String"/>
     </mbean>
     
-	<mbean name="it.lorenzoingrilli.dns4j.daemon.resolver.YamlResolver" type="ManagedBean" group="resolver" domain="dns4j">
+	<mbean name="it.lorenzoingrilli.dns4j.daemon.resolver.YamlResolver" type="ManagedBean" group="resolver" domain="dns4j" description="YAML Resolver">
 		<attribute name="liveRefresh" type="long"/>
 		<attribute name="filename" type="java.lang.String"/>
     </mbean>
     
-	<mbean name="java.util.concurrent.ThreadPoolExecutor" type="ManagedBean" group="threadpool" domain="dns4j">
+	<mbean name="java.util.concurrent.ThreadPoolExecutor" type="ManagedBean" group="threadpool" domain="dns4j" description="Thread Pool">
 		<attribute name="activeCount" type="int" writeable="false"/>
 		<attribute name="completedTaskCount" type="long" writeable="false"/>		
 		<attribute name="corePoolSize" type="int"/>
@@ -35,7 +39,7 @@
 		<attribute name="terminating" type="boolean" writeable="false" getMethod="isTerminating"/>
     </mbean>
 
-	<mbean name="org.apache.commons.dbcp.BasicDataSource" type="ManagedBean" group="datasource" domain="dns4j">
+	<mbean name="org.apache.commons.dbcp.BasicDataSource" type="ManagedBean" group="datasource" domain="dns4j" description="Datasource">
 		<attribute name="initialSize" type="int" writeable="false"/>
 		<attribute name="driverClassName" type="java.lang.String" writeable="false"/>		
 		<attribute name="defaultReadOnly" type="boolean"/>

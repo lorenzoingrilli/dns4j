@@ -6,8 +6,9 @@ public class EventMessage implements Event {
 
 	private Message message;
 	private Object emitter;
+	private long timestamp;
 
-	public EventMessage(Object emitter, Message message) {
+	public EventMessage(Object emitter, Message message, long timestamp) {
 		super();
 		this.emitter = emitter;
 		this.message = message;
@@ -19,6 +20,14 @@ public class EventMessage implements Event {
 	
 	public Object getEmitter() {
 		return emitter;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 }

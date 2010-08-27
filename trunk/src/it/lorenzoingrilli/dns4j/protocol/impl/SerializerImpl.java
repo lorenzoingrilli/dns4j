@@ -14,7 +14,9 @@ import it.lorenzoingrilli.dns4j.protocol.rr.Ns;
 import it.lorenzoingrilli.dns4j.protocol.rr.Ptr;
 import it.lorenzoingrilli.dns4j.protocol.rr.RR;
 import it.lorenzoingrilli.dns4j.protocol.rr.Soa;
+import it.lorenzoingrilli.dns4j.protocol.rr.Srv;
 import it.lorenzoingrilli.dns4j.protocol.rr.Txt;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.AAAAImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.AImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.CNameImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.HInfoImpl;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.UnknownHostException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
@@ -122,13 +125,13 @@ public class SerializerImpl implements Serializer {
     		r = is.read(buffer, letti, buffer.length-letti);
     		letti += r;
     	}
-    	return deserialize(buffer);
+    	return deserialize(buffer, 0, len);
     }
     
     @Override
-    public Message deserialize(byte[] buffer) {
+    public Message deserialize(byte[] buffer, int offset, int lenght) {
         MessageImpl m = new MessageImpl();
-        ByteBuffer bb = ByteBuffer.wrap(buffer);
+        ByteBuffer bb = ByteBuffer.wrap(buffer, offset, lenght);
         
         // Header
         Header h = m.getHeader();
@@ -192,6 +195,7 @@ public class SerializerImpl implements Serializer {
         else if(rr instanceof Ptr) serialize(bb, (Ptr) rr);
         else if(rr instanceof Soa) serialize(bb, (Soa) rr);
         else if(rr instanceof Txt) serialize(bb, (Txt) rr);
+        else if(rr instanceof Srv) serialize(bb, (Srv) rr);
         else {
             putUShort(bb, rr.getRdLenght());
             bb.put(rr.getRdata());
@@ -237,6 +241,11 @@ public class SerializerImpl implements Serializer {
         putUShort(bb, domainNameSize(ptr.getPtrDname()));
         putDomainName(bb, ptr.getPtrDname());
     }
+    
+    private static void serialize(ByteBuffer bb, Srv srv) {
+    	// TODO implement
+    	throw new RuntimeException("operazione non ancora implementata");
+    }
 
     private static RR deserializeRR(ByteBuffer bb){
         String name = getDomainName(bb);
@@ -246,14 +255,16 @@ public class SerializerImpl implements Serializer {
         int len = getUShort(bb);
         RR rr = null;
         switch(type) {
-            case Type.A: rr = deserializeA(bb); break;
-            case Type.CNAME: rr = deserializeCName(bb); break;
-            case Type.MX: rr = deserializeMx(bb); break;
-            case Type.NS: rr = deserializeNs(bb); break;
-            case Type.SOA: rr = deserializeSoa(bb); break;
-            case Type.PTR: rr = deserializePtr(bb); break;
-            case Type.HINFO: rr = deserializeHInfo(bb); break;
-            case Type.TXT: rr = deserializeTxt(bb); break;
+            case Type.A:	rr = deserializeA(bb); break;
+            case Type.AAAA: rr = deserializeAAAA(bb); break;
+            case Type.CNAME:rr = deserializeCName(bb); break;
+            case Type.MX:	rr = deserializeMx(bb); break;
+            case Type.NS:	rr = deserializeNs(bb); break;
+            case Type.SOA:	rr = deserializeSoa(bb); break;
+            case Type.PTR:	rr = deserializePtr(bb); break;
+            case Type.HINFO:rr = deserializeHInfo(bb); break;
+            case Type.TXT:	rr = deserializeTxt(bb); break;
+            case Type.SRV:	rr = deserializeSrv(bb); break;
             default:
                 byte[] rdata = new byte[len];
                 bb.get(rdata);
@@ -280,6 +291,19 @@ public class SerializerImpl implements Serializer {
 	        bb.get(addr);
 	        A a = new AImpl();
 	        a.setAddress((Inet4Address) Inet4Address.getByAddress(addr));        
+	        return a;
+    	}
+    	catch(UnknownHostException e) {
+    		throw new RuntimeException(e);
+    	}    	
+    }
+    
+    private static RR deserializeAAAA(ByteBuffer bb) {
+    	try {
+	        byte addr[] = new byte[16];
+	        bb.get(addr);
+	        AAAA a = new AAAAImpl();
+	        a.setAddress((Inet6Address) Inet6Address.getByAddress(addr));        
 	        return a;
     	}
     	catch(UnknownHostException e) {
@@ -341,7 +365,12 @@ public class SerializerImpl implements Serializer {
         txt.setData(getCharacterString(bb));
         return txt;
     }
-   
+
+    private static RR deserializeSrv(ByteBuffer bb){    	
+    	// TODO implement
+    	throw new RuntimeException("operazione non ancora implementata");
+    }
+    
     private static void serialize(ByteBuffer bb, Soa soa) {
         putUShort(bb, 
                 domainNameSize(soa.getMname())+
