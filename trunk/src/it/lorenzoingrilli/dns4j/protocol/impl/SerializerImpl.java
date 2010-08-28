@@ -25,6 +25,7 @@ import it.lorenzoingrilli.dns4j.protocol.rr.impl.NsImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.PtrImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.RRImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.SoaImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.SrvImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.TxtImpl;
 
 import java.io.IOException;
@@ -243,8 +244,11 @@ public class SerializerImpl implements Serializer {
     }
     
     private static void serialize(ByteBuffer bb, Srv srv) {
-    	// TODO implement
-    	throw new RuntimeException("operazione non ancora implementata");
+        putUShort(bb, domainNameSize(srv.getTarget())+6);
+        putUShort(bb, srv.getPriority());
+        putUShort(bb, srv.getWeight());
+        putUShort(bb, srv.getPort());
+        putDomainName(bb, srv.getTarget());
     }
 
     private static RR deserializeRR(ByteBuffer bb){
@@ -366,9 +370,12 @@ public class SerializerImpl implements Serializer {
         return txt;
     }
 
-    private static RR deserializeSrv(ByteBuffer bb){    	
-    	// TODO implement
-    	throw new RuntimeException("operazione non ancora implementata");
+    private static RR deserializeSrv(ByteBuffer bb){
+    	Srv srv = new SrvImpl();
+        srv.setPriority(getUShort(bb));
+        srv.setWeight(getUShort(bb));
+        srv.setPort(getUShort(bb));
+        return srv;
     }
     
     private static void serialize(ByteBuffer bb, Soa soa) {

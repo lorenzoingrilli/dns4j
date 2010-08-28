@@ -14,6 +14,7 @@ import it.lorenzoingrilli.dns4j.protocol.rr.impl.NsImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.PtrImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.RRImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.SoaImpl;
+import it.lorenzoingrilli.dns4j.protocol.rr.impl.SrvImpl;
 import it.lorenzoingrilli.dns4j.protocol.rr.impl.TxtImpl;
 
 import java.beans.ConstructorProperties;
@@ -68,7 +69,8 @@ public class YamlResolver extends AuthoritativeResolver implements Plugin, Runna
 		config.setClassTag("ns", NsImpl.class);
 		config.setClassTag("mx", MxImpl.class);
 		config.setClassTag("ptr", PtrImpl.class);
-		config.setClassTag("txt", TxtImpl.class);		
+		config.setClassTag("txt", TxtImpl.class);
+		config.setClassTag("srv", SrvImpl.class);	
 		config.setScalarSerializer(Inet4Address.class, new Inet4AddressSerializer());
 		config.setScalarSerializer(Inet6Address.class, new Inet6AddressSerializer());
 		
