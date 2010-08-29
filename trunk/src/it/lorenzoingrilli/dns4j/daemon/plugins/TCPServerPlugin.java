@@ -1,6 +1,5 @@
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
-import it.lorenzoingrilli.dns4j.annotations.Sperimental;
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
 import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
@@ -19,7 +18,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Executor;
 
-@Sperimental
 public class TCPServerPlugin implements Runnable, Plugin {
 
 	private Kernel kernel;
