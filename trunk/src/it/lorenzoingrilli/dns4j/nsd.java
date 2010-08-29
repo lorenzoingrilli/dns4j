@@ -69,10 +69,11 @@ public class nsd extends CliApplication {
 //		config.setClassTag("recursiveresolver", RecursiveAsyncResolver.class);
 		config.setClassTag("dbresolver", DBAuthResolver.class);
 		config.setClassTag("datasource", BasicDataSource.class);
-		config.setClassTag("log", LogPlugin.class);		 
+		config.setClassTag("jmx", JmxPlugin.class);
+		config.setClassTag("log", LogPlugin.class);		 		
 		config.setClassTag("tcp", TCPServerPlugin.class);
 		config.setClassTag("udp", UDPServerPlugin.class);
-		config.setClassTag("jmx", JmxPlugin.class);		
+		config.setScalarSerializer(InetAddress.class, new InetAddressSerializer());
 		
 		try {
 			config.setClassTag("unixsecurity", Class.forName("it.lorenzoingrilli.dns4j.daemon.plugins.UnixSecurityPlugin"));
