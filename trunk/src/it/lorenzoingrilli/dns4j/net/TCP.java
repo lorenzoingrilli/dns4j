@@ -12,7 +12,11 @@ import java.net.Socket;
  */
 public class TCP {
 
-	public static final int DEFAULT_BUFFER_SIZE = 65536;
+	public static final int DEFAULT_RECV_BUFFER_SIZE = 65536;	
+	public static final int DEFAULT_TIMEOUT = 1500;
+	public static final int DEFAULT_PORT = 53;
+	public static final int DEFAULT_BACKLOG = 100;
+	public static final InetAddress DEFAULT_BINDADDRESS = null;
 	
     public static int receive(InputStream is, byte[] response) throws IOException {
 	 int letti = 0;
@@ -40,10 +44,10 @@ public class TCP {
         return letti;
     }
     
-    public static ServerSocket server(int port, int backlog, InetAddress bindAddr) throws IOException {
+    public static ServerSocket server(int port, int backlog, InetAddress bindAddr, int timeout, int recvBufferSize) throws IOException {
     	ServerSocket socket = new ServerSocket(port, backlog, bindAddr);
-    	//socket.setReceiveBufferSize(size)
-    	//socket.setSoTimeout(timeout)
+    	socket.setSoTimeout(timeout);
+		socket.setReceiveBufferSize(recvBufferSize);
     	//socket.setPerformancePreferences(connectionTime, latency, bandwidth)
     	return socket;
     }

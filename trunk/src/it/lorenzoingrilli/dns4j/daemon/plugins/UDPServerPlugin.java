@@ -35,6 +35,8 @@ public class UDPServerPlugin implements Runnable, Plugin {
 	private int sendBufferSize = UDP.DEFAULT_SEND_BUFFER_SIZE;
 	private int recvBufferSize = UDP.DEFAULT_RECV_BUFFER_SIZE;
 	private int maxPacketSize = UDP.MAX_PACKET_SIZE;
+	private InetAddress bindAddress = UDP.DEFAULT_BINDADDRESS;
+	
 	private Kernel kernel;
 	
 	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
@@ -57,7 +59,7 @@ public class UDPServerPlugin implements Runnable, Plugin {
 	@Override
 	public void run() {
 		try {
-			socket = UDP.open(port, timeout, sendBufferSize, recvBufferSize);
+			socket = UDP.open(port, timeout, bindAddress, sendBufferSize, recvBufferSize);
 		} catch (SocketException e) {
 			throw new RuntimeException(e);
 		}

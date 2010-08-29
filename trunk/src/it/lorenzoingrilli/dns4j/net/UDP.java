@@ -15,10 +15,10 @@ public class UDP {
 	public static final int DEFAULT_SEND_BUFFER_SIZE = 62464;
 	public static final int DEFAULT_RECV_BUFFER_SIZE = 62464;
 	public static final int DEFAULT_BUFFER_SIZE = 512;	
-	public static final int DEFAULT_TCP_BUFFER_SIZE = 512;
 	public static final int DEFAULT_TIMEOUT = 5000;
-	public static final int DEFAULT_LISTEN_PORT = 53;
+	public static final int DEFAULT_PORT = 53;
 	public static final int MAX_PACKET_SIZE = 512;
+	public static final InetAddress DEFAULT_BINDADDRESS = null;
 	
 	public static DatagramSocket open(int timeout, int sendBufferSize, int recvBufferSize) throws SocketException {
 		DatagramSocket socket = new DatagramSocket();
@@ -28,8 +28,8 @@ public class UDP {
 		return socket;
 	}
 	
-	public static DatagramSocket open(int port, int timeout, int sendBufferSize, int recvBufferSize) throws SocketException {
-		DatagramSocket socket = new DatagramSocket(port);
+	public static DatagramSocket open(int port, int timeout, InetAddress bindAddress, int sendBufferSize, int recvBufferSize) throws SocketException {
+		DatagramSocket socket = new DatagramSocket(port, bindAddress);
 		socket.setSendBufferSize(sendBufferSize);
 		socket.setReceiveBufferSize(recvBufferSize);
 		socket.setSoTimeout(timeout);

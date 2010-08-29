@@ -13,6 +13,7 @@ import it.lorenzoingrilli.dns4j.protocol.Serializer;
 
 import java.beans.ConstructorProperties;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -21,13 +22,18 @@ import java.util.concurrent.Executor;
 @Sperimental
 public class TCPServerPlugin implements Runnable, Plugin {
 
+	private Kernel kernel;
+	
 	private ServerSocket ssocket = null;
 	private ServerSyncResolver<ServerQueryContext> resolver;
 	private Executor executor;
 	private Serializer serializer;
 
-	private int port;
-	private Kernel kernel;
+	private int port = TCP.DEFAULT_PORT;
+	private int recvBufferSize = TCP.DEFAULT_RECV_BUFFER_SIZE;
+	private int timeout = TCP.DEFAULT_TIMEOUT;	
+	private int backlog = TCP.DEFAULT_BACKLOG;
+	private InetAddress bindAddress = TCP.DEFAULT_BINDADDRESS;
 	
 	@ConstructorProperties(value={"port", "resolver", "executor", "serializer"})
 	public TCPServerPlugin(int port, ServerSyncResolver<ServerQueryContext> resolver, Executor executor, Serializer serializer) {
@@ -49,7 +55,7 @@ public class TCPServerPlugin implements Runnable, Plugin {
 	@Override
 	public void run() {
 		try {
-			ssocket = TCP.server(port, 100, null);
+			ssocket = TCP.server(port, backlog, bindAddress, timeout, recvBufferSize);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -123,6 +129,30 @@ public class TCPServerPlugin implements Runnable, Plugin {
 
 	public void setSerializer(Serializer serializer) {
 		this.serializer = serializer;
+	}
+
+	public int getRecvBufferSize() {
+		return recvBufferSize;
+	}
+
+	public void setRecvBufferSize(int recvBufferSize) {
+		this.recvBufferSize = recvBufferSize;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	public int getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(int backlog) {
+		this.backlog = backlog;
 	}
 
 }
