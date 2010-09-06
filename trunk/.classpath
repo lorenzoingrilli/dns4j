@@ -4,5 +4,18 @@
 	<classpathentry kind="src" path="test-core"/>
 	<classpathentry kind="src" path="src-server"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-digester-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-modeler-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-pool-1.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-all-1.7.4.jar"/>
+	<classpathentry kind="lib" path="lib/yamlbeans-1.04.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/jna.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
