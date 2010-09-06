@@ -1,0 +1,16 @@
+package it.lorenzoingrilli.dns4j.protocol.rr;
+
+import java.net.Inet4Address;
+
+/**
+ * A Resource Record.
+ * 
+ * Defined in RFC 1035
+ * 
+ * @author Lorenzo Ingrilli'
+ * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc1035.txt">RFC 1035</a> 
+ */
+public interface A extends RR {
+    public Inet4Address getAddress();
+    public void setAddress(Inet4Address address);
+}

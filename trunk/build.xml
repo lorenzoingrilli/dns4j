@@ -1,0 +1,105 @@
+<project
+	name="dns4j" 
+	default="build"
+	xmlns:ivy="antlib:org.apache.ivy.ant"
+	>
+
+<description>
+	DNS Implementation
+</description>
+
+<property name="vmversion" value="1.6"/>
+	
+<property name="srccoredir" location="src-core"/>
+<property name="srcserverdir" location="src-server"/>
+<property name="testdir" location="test"/>
+<property name="libdir" location="lib"/>
+<property name="workdir" location="work"/>	
+<property name="buildsrcdir" location="${workdir}/build-src"/>
+<property name="buildtestdir" location="${workdir}/build-test"/>
+<property name="distdir" location="${workdir}/dist"/>
+<property name="docsdir" location="${workdir}/javadocs"/>
+
+<property name="version" value="SNAPSHOT"/>
+	
+<property name="mainclass" value="it.lorenzoingrilli.dns4j.nsc"/>
+	
+<!-- 
+	Build project and create distributions JARs
+-->
+<target name="build" depends="dep,clean">	
+	
+	<mkdir dir="${distdir}"/>		
+	<mkdir dir="${buildsrcdir}"/>
+		
+	<!-- BUILD CORE -->
+	<javac debug="true" srcdir="${srccoredir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
+	<copy todir="${buildsrcdir}">
+		<fileset dir="${srccoredir}"/>
+	</copy>
+	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-core-${version}.jar"/>
+		
+	<!-- BUILD CORE+SERVER -->
+	<javac debug="true" srcdir="${srcserverdir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
+	<copy todir="${buildsrcdir}">
+		<fileset dir="${srcserverdir}"/>
+	</copy>
+	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-server-${version}.jar"/>
+	
+	<!-- BUILD CORE+SERVER+DEPENCENCES -->
+	<unjar src="${libdir}/yamlbeans-1.04.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-cli-1.2.jar" dest="${buildsrcdir}"/>	
+	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-pool-1.5.4.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-dbcp-1.4.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-modeler-2.0.1.jar" dest="${buildsrcdir}"/>
+	<unjar src="${libdir}/commons-logging-1.1.1.jar" dest="${buildsrcdir}"/>
+	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-all-${version}.jar">
+		<manifest>			
+			<attribute name="Main-Class" value="${mainclass}"/>
+		</manifest>
+	</jar>
+</target>
+	
+<!-- 
+	Generate Javadocs API documentation
+-->
+<target name="docs" depends="build">
+	<mkdir dir="${docsdir}/core"/>
+	<javadoc destdir="${docsdir}/core" author="true" version="true" use="true" windowtitle="DNS4J - Core API" extdirs="${libdir}">
+		<packageset dir="${srccoredir}"/>
+		<bottom><![CDATA[<i>Copyright &#169; <a href="http://www.lorenzoingrilli.it">Lorenzo Ingrill&igrave;</a></i>]]></bottom>
+	</javadoc>
+	<mkdir dir="${docsdir}/server"/>
+	<javadoc destdir="${docsdir}/server" author="true" version="true" use="true" windowtitle="DNS4J - Server API" extdirs="${distdir}/dns4j.jar:${libdir}">
+		<packageset dir="${srcserverdir}"/>
+		<bottom><![CDATA[<i>Copyright &#169; <a href="http://www.lorenzoingrilli.it">Lorenzo Ingrill&igrave;</a></i>]]></bottom>
+	</javadoc>
+</target>
+	
+<!-- 
+	Clean work directory
+-->	
+<target name="clean">
+	<delete dir="${workdir}"/>
+</target>
+	
+<!-- 
+	Retrieve all needed dependencies
+-->
+ <target name="dep" description="retrieve dependencies" >
+
+ 	<mkdir dir="${libdir}"/>
+ 	<ivy:retrieve/>
+ 	
+ 	<available property="yaml-present" file="${libdir}/yamlbeans-1.04.jar"/>
+ 	
+ 	<antcall target="dep-yamlbeans"/>
+	
+ </target>
+
+<target name="dep-yamlbeans" unless="yaml-present">
+	<get src="http://yamlbeans.googlecode.com/files/yamlbeans-1.04.jar" dest="${libdir}"/>
+</target>
+	
+</project>
