@@ -1,0 +1,8 @@
+Package: dns4j
+Version: 1.0.beta1
+Maintainer: Lorenzo Ingrilli <info@lorenzoingrilli.it>
+Description: DNS Server
+Section: net
+Priority: standard
+Essential: no
+Architecture: all
