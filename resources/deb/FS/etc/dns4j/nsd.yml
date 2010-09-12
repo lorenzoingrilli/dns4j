@@ -1,0 +1,7 @@
+---
+&yaml !yamlresolver { file: /etc/dns4j/zones.yml }
+---
+!tcp { port: 5053, resolver: *yaml}
+---
+!udp { port: 5053, resolver: *yaml}
+---

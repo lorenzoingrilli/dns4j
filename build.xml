@@ -20,6 +20,9 @@
 <property name="distdir" location="${workdir}/dist"/>
 <property name="docsdir" location="${workdir}/javadocs"/>
 
+<property name="dpkgdeb" value="/usr/bin/dpkg-deb"/>
+<property name="debdir" location="${workdir}/deb"/>
+
 <property name="version" value="SNAPSHOT"/>
 	
 <property name="mainclass" value="it.lorenzoingrilli.dns4j.nsc"/>
@@ -82,6 +85,29 @@
 -->	
 <target name="clean">
 	<delete dir="${workdir}"/>
+</target>
+
+<!--
+ Generate DEB installation file 
+-->
+<target name="dist-deb" depends="build">
+	<mkdir dir="${debdir}"/>
+	<mkdir dir="${debdir}/DEBIAN"/>
+	<copy todir="${debdir}/DEBIAN">
+		<fileset dir="resources/deb/DEBIAN"/>
+	</copy>
+	<copy todir="${debdir}">
+		<fileset dir="resources/deb/FS"/>
+	</copy>
+	<copy todir="${debdir}/usr/share/dns4j">
+		<fileset file="${distdir}/dns4j-all-${version}.jar"/>
+	</copy>
+	
+	<exec executable="${dpkgdeb}">
+		<arg value="--build"/>
+		<arg value="${debdir}"/>
+		<arg value="${distdir}/dns4j-${version}.deb"/>
+	</exec>
 </target>
 	
 <!-- 

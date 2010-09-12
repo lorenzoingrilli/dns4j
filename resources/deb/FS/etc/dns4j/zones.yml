@@ -1,0 +1,7 @@
+!zone
+name: example.net
+rrs:
+- !soa { name: example.net, mname: ns.example.net, rname: info.example.net, ttl: 300}
+- !txt { name: www.example.net, data: test, ttl: 100 }
+- !a { name: www.example.net, address: 10.11.12.13 }
+- !mx { name: example.net, exchange: mail.example.net, preference: 10 }
