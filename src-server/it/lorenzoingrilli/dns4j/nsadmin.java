@@ -23,7 +23,7 @@ import org.apache.commons.cli.ParseException;
  *
  * @author Lorenzo Ingrilli'
  */
-public class dbadmin {
+public class nsadmin {
     
 	private static final String DEFAULT_JDBCURL = "jdbc:mysql://localhost:3306/dns4j";	
 	private static final String DEFAULT_USERNAME = "dns4j";
@@ -46,9 +46,9 @@ public class dbadmin {
     	
     	OptionGroup g1 = new OptionGroup();
     	g1.setRequired(true);
-    	g1.addOption(new Option("I", "install", false, "Create tables on selected database"));
-    	g1.addOption(new Option("E", "example", false, "Install example zone configuration"));
-    	g1.addOption(new Option("U", "update", false, "Update tables on selected database"));
+    	g1.addOption(new Option("I", "install-db", false, "Create tables on selected database"));
+    	g1.addOption(new Option("U", "update-db", false, "Update tables on selected database"));
+    	g1.addOption(new Option("E", "example", false, "Install example zone configuration"));    	
     	options.addOptionGroup(g1);
     }
 
@@ -85,14 +85,14 @@ public class dbadmin {
         }
         catch(ParseException exp ) {
             HelpFormatter help = new HelpFormatter();
-            help.printHelp("db", "db", options, "Developed by Lorenzo Ingrilli' - http://www.lorenzoingrilli.it", true);
+            help.printHelp("nsadmin", "nsadmin", options, "Developed by Lorenzo Ingrilli' - http://www.lorenzoingrilli.it", true);
             System.exit(1);
         }
         return null;
     }
     
     private static void executeScript(Connection connection, String filename) throws IOException, SQLException {
-		InputStream is = dbadmin.class.getResourceAsStream(filename);
+		InputStream is = nsadmin.class.getResourceAsStream(filename);
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		String sql = null;
 		while( (sql = r.readLine())!=null ){
