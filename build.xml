@@ -20,6 +20,7 @@
 <property name="distdir" location="${workdir}/dist"/>
 <property name="docsdir" location="${workdir}/javadocs"/>
 
+<property name="fakeroot" value="/usr/bin/fakeroot"/>
 <property name="dpkgdeb" value="/usr/bin/dpkg-deb"/>
 <property name="debdir" location="${workdir}/deb"/>
 
@@ -107,7 +108,8 @@
 	<chmod file="${debdir}/usr/sbin/nsadmin" perm="a+x"/>
 	<chmod file="${debdir}/usr/sbin/nsdaemon" perm="a+x"/>
 	
-	<exec executable="${dpkgdeb}">
+	<exec executable="${fakeroot}">
+		<arg value="${dpkgdeb}"/>
 		<arg value="--build"/>
 		<arg value="${debdir}"/>
 		<arg value="${distdir}/dns4j-${version}.deb"/>
