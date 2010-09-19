@@ -99,9 +99,13 @@
 	<copy todir="${debdir}">
 		<fileset dir="resources/deb/FS"/>
 	</copy>
-	<copy todir="${debdir}/usr/share/dns4j">
+	<copy tofile="${debdir}/usr/share/dns4j/dns4j-all.jar">
 		<fileset file="${distdir}/dns4j-all-${version}.jar"/>
 	</copy>
+	
+	<chmod file="${debdir}/etc/init.d/dns4j" perm="a+x"/>
+	<chmod file="${debdir}/usr/sbin/nsadmin" perm="a+x"/>
+	<chmod file="${debdir}/usr/sbin/nsdaemon" perm="a+x"/>
 	
 	<exec executable="${dpkgdeb}">
 		<arg value="--build"/>

@@ -1,0 +1,2 @@
+#!/bin/sh
+java -cp /usr/share/dns4j/dns4j-all.jar it.lorenzoingrilli.dns4j.nsd $@

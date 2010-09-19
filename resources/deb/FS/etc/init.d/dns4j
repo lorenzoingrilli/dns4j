@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo Use upstart to start/stop DNS4J
+echo To start dns4j type: "start dns4j"
+echo To stop dns4j type: "stop dns4j"
