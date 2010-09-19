@@ -212,6 +212,10 @@ public class DBAuthResolver extends AuthoritativeResolver {
 		
 	protected List<Map<String, Object>> sqlQuery(String sql, Object ...params) throws SQLException {
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
+		if(sql==null) {
+			return list;
+		}
+		
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -236,9 +240,6 @@ public class DBAuthResolver extends AuthoritativeResolver {
 			}
 			rs.close();
 			stmt.close();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
 		}
 		finally {
 			if(connection!=null)
