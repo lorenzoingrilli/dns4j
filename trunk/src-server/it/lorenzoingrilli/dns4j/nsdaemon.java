@@ -37,19 +37,19 @@ import com.esotericsoftware.yamlbeans.YamlReader;
  *
  * @author Lorenzo Ingrilli'
  */
-public class nsd extends CliApplication {
+public class nsdaemon extends CliApplication {
     
-	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"nsd.yml";
+	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"dns4j.conf";
 	
 	public static void main(String[] args) throws Exception {    	
-		nsd _nsd = new nsd(args);
+		nsdaemon _nsd = new nsdaemon(args);
 		_nsd.startup();
 	}
 
 	private Kernel kernel = new KernelImpl();	
 	private Logger logger = Logger.getLogger(KernelImpl.class.getName());
 	
-	public nsd(String args[]) {
+	public nsdaemon(String args[]) {
 		super();
 		setArgs(args);
     	Options options = new Options();

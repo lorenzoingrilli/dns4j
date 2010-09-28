@@ -1,2 +1,2 @@
-/etc/dns4j/nsd.yml
+/etc/dns4j/dns4j.conf
 /etc/dns4j/zones.yml

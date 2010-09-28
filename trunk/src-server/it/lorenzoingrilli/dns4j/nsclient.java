@@ -42,7 +42,7 @@ import com.esotericsoftware.yamlbeans.YamlWriter;
  * 
  * @author Lorenzo Ingrilli'
  */
-public class nsc {
+public class nsclient {
 
 	private static final String RESOLV_CONF = File.separator+"etc"+File.separator+"resolv.conf";
 	private static final String SEPARATOR = " ";
