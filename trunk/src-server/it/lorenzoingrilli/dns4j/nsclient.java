@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j;
 
 import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
@@ -158,7 +164,7 @@ public class nsclient {
         }
         catch(ParseException exp ) {
             HelpFormatter help = new HelpFormatter();
-            help.printHelp("nsc", "Name Server Client", options, "Developed by Lorenzo Ingrilli' - http://www.lorenzoingrilli.it", true);
+            help.printHelp("nsclient", "Name Server Client", options, "Developed by Lorenzo Ingrilli' - http://www.lorenzoingrilli.it", true);
             System.exit(1);
         }
         return null;

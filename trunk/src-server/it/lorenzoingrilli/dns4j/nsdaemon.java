@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j;
 
 import it.lorenzoingrilli.dns4j.daemon.Kernel;
@@ -11,7 +17,7 @@ import it.lorenzoingrilli.dns4j.daemon.resolver.ScriptedResolver;
 import it.lorenzoingrilli.dns4j.daemon.resolver.YamlResolver;
 import it.lorenzoingrilli.dns4j.protocol.impl.SerializerImpl;
 import it.lorenzoingrilli.dns4j.daemon.resolver.DBAuthResolver;
-import it.lorenzoingrilli.dns4j.daemon.util.CliApplication;
+import it.lorenzoingrilli.dns4j.daemon.util.CliApp;
 import it.lorenzoingrilli.dns4j.daemon.util.FileSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet4AddressSerializer;
 import it.lorenzoingrilli.dns4j.daemon.util.Inet6AddressSerializer;
@@ -37,7 +43,7 @@ import com.esotericsoftware.yamlbeans.YamlReader;
  *
  * @author Lorenzo Ingrilli'
  */
-public class nsdaemon extends CliApplication {
+public class nsdaemon extends CliApp {
     
 	public static final String DEFAULT_CONF = File.separator+"etc"+File.separator+"dns4j"+File.separator+"dns4j.conf";
 	

@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
 import java.beans.ConstructorProperties;
@@ -7,6 +13,15 @@ import it.lorenzoingrilli.dns4j.daemon.Kernel;
 
 import com.sun.jna.Native;
 
+/**
+ * Unix Security Plugin
+ * 
+ * Enhance security in unix enviroment
+ * Warning: depends on JNA (>=3.2) (not bundled with dns4j)
+ *  
+ * @author Lorenzo Ingrilli
+ *
+ */
 public class UnixSecurityPlugin implements Plugin {
 	
 	private long uid;
