@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j.net;
 
 import java.io.IOException;
@@ -7,8 +13,10 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * @author Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+/** 
+ * TCP helper methods
+ * 
+ * @author Lorenzo Ingrilli'
  */
 public class TCP {
 
