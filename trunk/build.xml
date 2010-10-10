@@ -15,7 +15,9 @@
 <property name="testdir" location="test"/>
 <property name="libdir" location="lib"/>
 <property name="workdir" location="work"/>	
-<property name="buildsrcdir" location="${workdir}/build-src"/>
+<property name="buildcoredir" location="${workdir}/build-core"/>
+<property name="buildserverdir" location="${workdir}/build-server"/>
+<property name="buildalldir" location="${workdir}/build-all"/>
 <property name="buildtestdir" location="${workdir}/build-test"/>
 <property name="distdir" location="${workdir}/dist"/>
 <property name="docsdir" location="${workdir}/javadocs"/>
@@ -34,31 +36,41 @@
 <target name="build" depends="dep,clean">	
 	
 	<mkdir dir="${distdir}"/>		
-	<mkdir dir="${buildsrcdir}"/>
+	<mkdir dir="${buildcoredir}"/>
+	<mkdir dir="${buildserverdir}"/>
 		
 	<!-- BUILD CORE -->
-	<javac debug="true" srcdir="${srccoredir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
-	<copy todir="${buildsrcdir}">
+	<echo message="*** BUILD CORE"/>
+	<javac debug="true" srcdir="${srccoredir}" destdir="${buildcoredir}" extdirs="${libdir}" target="${vmversion}"/>
+	<copy todir="${buildcoredir}">
 		<fileset dir="${srccoredir}"/>
 	</copy>
-	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-core-${version}.jar"/>
+	<jar basedir="${buildcoredir}" destfile="${distdir}/dns4j-core-${version}.jar"/>
 		
-	<!-- BUILD CORE+SERVER -->
-	<javac debug="true" srcdir="${srcserverdir}" destdir="${buildsrcdir}" extdirs="${libdir}" target="${vmversion}"/>
-	<copy todir="${buildsrcdir}">
+	<!-- BUILD SERVER -->
+	<echo message="*** BUILD SERVER"/>
+	<javac debug="true" srcdir="${srcserverdir}" destdir="${buildserverdir}" extdirs="${libdir}" target="${vmversion}">
+		<classpath>
+			<pathelement location="${buildcoredir}"/>
+		</classpath>
+	</javac>	
+	<copy todir="${buildserverdir}">
 		<fileset dir="${srcserverdir}"/>
 	</copy>
-	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-server-${version}.jar"/>
+	<jar basedir="${buildserverdir}" destfile="${distdir}/dns4j-server-${version}.jar"/>
 	
 	<!-- BUILD CORE+SERVER+DEPENCENCES -->
-	<unjar src="${libdir}/yamlbeans-1.04.jar" dest="${buildsrcdir}"/>
-	<unjar src="${libdir}/commons-cli-1.2.jar" dest="${buildsrcdir}"/>	
-	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildsrcdir}"/>
-	<unjar src="${libdir}/commons-pool-1.5.4.jar" dest="${buildsrcdir}"/>
-	<unjar src="${libdir}/commons-dbcp-1.4.jar" dest="${buildsrcdir}"/>
-	<unjar src="${libdir}/commons-modeler-2.0.1.jar" dest="${buildsrcdir}"/>
-	<unjar src="${libdir}/commons-logging-1.1.1.jar" dest="${buildsrcdir}"/>
-	<jar basedir="${buildsrcdir}" destfile="${distdir}/dns4j-all-${version}.jar">
+	<echo message="*** BUILD ALL"/>
+	<unjar src="${distdir}/dns4j-server-${version}.jar" dest="${buildalldir}"/>
+	<unjar src="${distdir}/dns4j-core-${version}.jar" dest="${buildalldir}"/>
+	<unjar src="${libdir}/yamlbeans-1.04.jar" dest="${buildalldir}"/>
+	<unjar src="${libdir}/commons-cli-1.2.jar" dest="${buildalldir}"/>	
+	<unjar src="${libdir}/commons-codec-1.4.jar" dest="${buildalldir}"/>
+	<unjar src="${libdir}/commons-pool-1.5.4.jar" dest="${buildalldir}"/>
+	<unjar src="${libdir}/commons-dbcp-1.4.jar" dest="${buildalldir}"/>
+	<unjar src="${libdir}/commons-modeler-2.0.1.jar" dest="${buildalldir}"/>
+	<unjar src="${libdir}/commons-logging-1.1.1.jar" dest="${buildalldir}"/>
+	<jar basedir="${buildalldir}" destfile="${distdir}/dns4j-all-${version}.jar">
 		<manifest>			
 			<attribute name="Main-Class" value="${mainclass}"/>
 		</manifest>
@@ -100,13 +112,24 @@
 	<copy todir="${debdir}">
 		<fileset dir="resources/deb/FS"/>
 	</copy>
-	<copy tofile="${debdir}/usr/share/dns4j/dns4j-all.jar">
-		<fileset file="${distdir}/dns4j-all-${version}.jar"/>
+	<copy todir="${debdir}/usr/share/dns4j/lib" flatten="true">
+        <resources>
+			<file file="${distdir}/dns4j-core-${version}.jar"/>
+			<file file="${distdir}/dns4j-server-${version}.jar"/>
+			<file file="${libdir}/yamlbeans-1.04.jar"/>
+			<file file="${libdir}/commons-cli-1.2.jar"/>	
+			<file file="${libdir}/commons-codec-1.4.jar"/>
+			<file file="${libdir}/commons-pool-1.5.4.jar"/>
+			<file file="${libdir}/commons-dbcp-1.4.jar"/>
+			<file file="${libdir}/commons-modeler-2.0.1.jar"/>
+			<file file="${libdir}/commons-logging-1.1.1.jar"/>
+        </resources>
 	</copy>
 	
 	<chmod file="${debdir}/etc/init.d/dns4j" perm="a+x"/>
 	<chmod file="${debdir}/usr/sbin/nsadmin" perm="a+x"/>
 	<chmod file="${debdir}/usr/sbin/nsdaemon" perm="a+x"/>
+	<chmod file="${debdir}/usr/sbin/nsclient" perm="a+x"/>
 	
 	<exec executable="${fakeroot}">
 		<arg value="${dpkgdeb}"/>

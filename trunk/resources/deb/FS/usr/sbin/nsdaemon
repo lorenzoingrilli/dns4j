@@ -1,2 +1,2 @@
 #!/bin/sh
-exec java -cp /usr/share/dns4j/dns4j-all.jar it.lorenzoingrilli.dns4j.nsdaemon $@
+exec java -cp '/usr/share/dns4j/lib/*' it.lorenzoingrilli.dns4j.nsdaemon $@
