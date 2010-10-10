@@ -1,5 +1,5 @@
 Package: dns4j
-Version: 1.0.beta2
+Version: 1.0.beta3
 Maintainer: Lorenzo Ingrilli <info@lorenzoingrilli.it>
 Description: DNS Server
 Section: net
