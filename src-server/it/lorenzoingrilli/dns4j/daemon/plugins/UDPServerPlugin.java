@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
 import it.lorenzoingrilli.dns4j.daemon.EventRecv;
@@ -24,6 +30,14 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Executor;
 
+/**
+ * UDP Server Plugin
+ * 
+ * Handle a tcp port for serve tcp dns requests
+ *  
+ * @author Lorenzo Ingrilli
+ *
+ */
 public class UDPServerPlugin implements Runnable, Plugin {
 	
 	private int timeout = UDP.DEFAULT_TIMEOUT;

@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
 import java.util.logging.Level;
@@ -9,6 +15,14 @@ import it.lorenzoingrilli.dns4j.daemon.EventSent;
 import it.lorenzoingrilli.dns4j.daemon.PluginEventReceiver;
 import it.lorenzoingrilli.dns4j.daemon.Kernel;
 
+/**
+ * LOG Plugin
+ * 
+ * Log sent/recevide messages
+ * 
+ * @author Lorenzo Ingrilli
+ *
+ */
 public class LogPlugin implements PluginEventReceiver {
 
 	private Logger logger = Logger.getLogger(LogPlugin.class.getName());

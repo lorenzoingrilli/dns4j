@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j.daemon.plugins;
 
 import java.io.IOException;
@@ -16,6 +22,15 @@ import org.apache.commons.modeler.Registry;
 import it.lorenzoingrilli.dns4j.daemon.Plugin;
 import it.lorenzoingrilli.dns4j.daemon.Kernel;
 
+/**
+ * JMX Plugin.
+ * 
+ * Expose dns4j component via jmx interface.
+ * Warning: it does not start a jmx server connector. 
+ * 
+ * @author Lorenzo Ingrilli
+ *
+ */
 public class JmxPlugin implements Plugin {
 	
 	private static final String MODELER_CONF = "/it/lorenzoingrilli/dns4j/daemon/util/mbeans.xml";

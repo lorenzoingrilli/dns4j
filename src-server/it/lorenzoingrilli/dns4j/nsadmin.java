@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j;
 
 import java.io.BufferedReader;
@@ -19,7 +25,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * DNS4J Database install/upgrade utility
+ * DNS4J daemon management utility
  *
  * @author Lorenzo Ingrilli'
  */
@@ -46,8 +52,8 @@ public class nsadmin {
     	
     	OptionGroup g1 = new OptionGroup();
     	g1.setRequired(true);
-    	g1.addOption(new Option("I", "install-db", false, "Create tables on selected database"));
-    	g1.addOption(new Option("U", "update-db", false, "Update tables on selected database"));
+    	g1.addOption(new Option("I", "install-db", false, "Create dns4j tables on selected database"));
+    	g1.addOption(new Option("U", "update-db", false, "Update dns4h tables on selected database"));
     	g1.addOption(new Option("E", "example", false, "Install example zone configuration"));    	
     	options.addOptionGroup(g1);
     }

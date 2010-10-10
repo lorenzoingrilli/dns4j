@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2010 - Lorenzo Ingrilli' - info@lorenzoingrilli.it
+ * 
+ * Licensed under LGPL3 only.
+ * See http://www.gnu.org/licenses/lgpl.html
+ */
 package it.lorenzoingrilli.dns4j.daemon.util;
 
 import org.apache.commons.cli.CommandLine;
@@ -12,13 +18,13 @@ import org.apache.commons.cli.ParseException;
  * 
  * @author Lorenzo Ingrilli'
  */
-public class CliApplication {
+public class CliApp {
 		
 	private Options options;
 	private String args[];
 	private CommandLine cmdLine;
 	
-	public CliApplication() { 
+	public CliApp() { 
 	}
 	
 	public void startup() throws Exception {
