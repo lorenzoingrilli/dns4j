@@ -99,11 +99,13 @@
 <target name="clean">
 	<delete dir="${workdir}"/>
 </target>
-
+	
 <!--
  Generate DEB installation file 
 -->
-<target name="dist-deb" depends="build">
+<target name="dist" depends="build">
+	
+	<!-- SERVER -->
 	<mkdir dir="${debdir}"/>
 	<mkdir dir="${debdir}/DEBIAN"/>
 	<copy todir="${debdir}/DEBIAN">
@@ -116,7 +118,7 @@
         <resources>
 			<file file="${distdir}/dns4j-core-${version}.jar"/>
 			<file file="${distdir}/dns4j-server-${version}.jar"/>
-			<file file="${libdir}/yamlbeans-1.04.jar"/>
+			<file file="${libdir}/yamlbeans-1.05.jar"/>
 			<file file="${libdir}/commons-cli-1.2.jar"/>	
 			<file file="${libdir}/commons-codec-1.4.jar"/>
 			<file file="${libdir}/commons-pool-1.5.4.jar"/>
@@ -137,24 +139,49 @@
 		<arg value="${debdir}"/>
 		<arg value="${distdir}/dns4j-${version}.deb"/>
 	</exec>
+	
+	<!-- EXTRAS -->
+	<delete dir="${debdir}"/>
+	<mkdir dir="${debdir}"/>
+	<mkdir dir="${debdir}/DEBIAN"/>
+	<copy todir="${debdir}/DEBIAN">
+		<fileset dir="resources/deb-extras/DEBIAN"/>
+	</copy>
+	<mkdir dir="${debdir}/usr/share/dns4j/lib" />
+	<copy todir="${debdir}/usr/share/dns4j/lib" flatten="true">
+        <resources>
+			<file file="${libdir}/jna-3.2.3.jar"/>
+        	<file file="${libdir}/mysql-connector-java-5.1.13.jar"/>
+        	<file file="${libdir}/groovy-all-1.7.5.jar"/>
+        </resources>
+	</copy>
+		
+	<exec executable="${fakeroot}">
+		<arg value="${dpkgdeb}"/>
+		<arg value="--build"/>
+		<arg value="${debdir}"/>
+		<arg value="${distdir}/dns4j-extras-${version}.deb"/>
+	</exec>
+	
 </target>
 	
 <!-- 
 	Retrieve all needed dependencies
 -->
- <target name="dep" description="retrieve dependencies" >
-
- 	<mkdir dir="${libdir}"/>
- 	<ivy:retrieve/>
+<target name="dep" description="retrieve dependencies" >
  	
- 	<available property="yaml-present" file="${libdir}/yamlbeans-1.04.jar"/>
+	<mkdir dir="${libdir}"/>
+	<ivy:retrieve/>
+ 	
+ 	<available property="yaml-present" file="${libdir}/yamlbeans-1.05.jar"/>
  	
  	<antcall target="dep-yamlbeans"/>
 	
- </target>
+</target>
 
-<target name="dep-yamlbeans" unless="yaml-present">
-	<get src="http://yamlbeans.googlecode.com/files/yamlbeans-1.04.jar" dest="${libdir}"/>
+<target name="dep-yamlbeans" unless="yaml-present">	
+	<get src="http://yamlbeans.googlecode.com/files/yamlbeans-1.05.zip" dest="${libdir}"/>
+	<unzip src="${libdir}/yamlbeans-1.05.zip" dest="${libdir}"/>
 </target>
 	
 </project>
