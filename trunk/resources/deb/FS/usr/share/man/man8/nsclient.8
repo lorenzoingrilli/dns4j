@@ -1,0 +1,78 @@
+.TH nsclient 8
+.SH NAME
+nsclient \- DNS client
+.SH SYNOPSIS
+nsclient -n name (-y | -h | -b |-H) 
+.SH DESCRIPTION
+DNS client
+.SH OPTIONS
+.TP                           
+.B -n, --name [name]
+.br
+Name to query
+.PP
+.TP                           
+.B -v, --verbose
+.br
+Write out more detailed information
+.PP
+.TP                           
+.B -s, --server [host@port]
+.br
+Use this server instead of one in /etc/resolv.conf
+.PP
+.TP                           
+.B -N, --no-recursion 
+.br
+Disable recursion (default enabled)
+.PP
+.TP                           
+.B -t, --type [type] 
+.br
+Make a 'type' query (default 'A')
+.PP
+.TP                           
+.B -c, --class [class] 
+.br
+Make a 'class' query (default 'INET')
+.PP
+.TP                           
+.B -X, --no-udp 
+.br
+Disable UDP requests
+.PP
+.TP                           
+.B -F, --no-tcp 
+.br
+Disable TCP requests
+.PP
+.TP                           
+.B -a, --attempts [num] 
+.br
+Number of times to try UDP queries to server (default 3)
+.PP
+.TP                           
+.B -T, --timeout [milliseconds] 
+.br
+timeout (in milliseconds) for a query (default 5 second)
+.PP
+.SH FILES
+/etc/resolv.conf
+.SH EXAMPLES
+Resolve a hostname
+.br
+nsclient -h -n www.kernel.org
+.br
+.PP 
+Resolve a hostname using specified server
+.br
+nsclient -h -n www.kernel.org -s 10.0.0.1@53
+.SH SUPPORT
+Visit official web page on http://dns4j.sourceforge.net
+.SH SEE ALSO
+.B resolv.conf(5), nsdaemon(8), nsadmin(8)
+.SH AUTHOR
+Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+.SH COPYRIGHT
+Lorenzo Ingrilli' <info@lorenzoingrilli.it>
+.PP
