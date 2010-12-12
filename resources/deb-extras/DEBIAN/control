@@ -1,10 +1,9 @@
-Package: dns4j
+Package: dns4j-extras
 Version: 1.0.beta3
 Maintainer: Lorenzo Ingrilli <info@lorenzoingrilli.it>
-Description: DNS Server
+Description: DNS4J Plugins and third parts libraries
 Section: net
 Priority: standard
 Essential: no
-Depends: default-jre (>=1.6)
+Depends: default-jre (>=1.6), dns4j (>=1.0)
 Architecture: all
- 
