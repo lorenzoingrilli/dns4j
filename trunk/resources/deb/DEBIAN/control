@@ -7,4 +7,3 @@ Priority: standard
 Essential: no
 Depends: default-jre (>=1.6)
 Architecture: all
- 
