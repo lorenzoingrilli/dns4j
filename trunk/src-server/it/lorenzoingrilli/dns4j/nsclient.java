@@ -65,8 +65,8 @@ public class nsclient {
     	g2.setRequired(true);
     	g2.addOption(new Option("y", "yaml", false, "output in yaml format"));
     	g2.addOption(new Option("h", "human", false, "output in human format"));
-    	g2.addOption(new Option("b", "base64", false, "output in human format"));
-    	g2.addOption(new Option("H", "hex", false, "output in human format"));    	
+    	g2.addOption(new Option("b", "base64", false, "output in base64 format"));
+    	g2.addOption(new Option("H", "hex", false, "output in hexadecimal format"));    	
 
     	options = new Options();
     	options.addOptionGroup(g1);
