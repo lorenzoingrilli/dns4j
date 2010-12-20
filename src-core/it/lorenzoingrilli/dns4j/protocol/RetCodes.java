@@ -22,6 +22,13 @@ public class RetCodes {
     public static final int UNIMPLEMENTED = 4;
     public static final int REFUSED = 5;
     
+    // DNS Update related
+    public static final int YXDOMAIN = 6;
+    public static final int YXRRSET=7;
+    public static final int NXRRSET=8;
+    public static final int NOTAUTH=9;
+    public static final int NOTZONE=10;
+
     // TSIG related
     public static final int BADSIG = 16;
     public static final int BADKEY = 17;
